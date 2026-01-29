@@ -1,0 +1,35 @@
+# === SECRETS & CREDENTIALS ===
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# === OAUTH TOKENS ===
+scripts/.gmail-tokens/
+**/*tokens*/
+**/credentials*.json
+**/secret*.json
+
+# === PERSONAL FILES (create from .example) ===
+USER.md
+MEMORY.md
+TOOLS.md
+IDENTITY.md
+
+# === MEMORY DIRECTORY (personal data) ===
+memory/
+
+# === LOGS ===
+*.log
+
+# === NODE ===
+node_modules/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === IDE ===
+.vscode/
+.idea/
