@@ -1,0 +1,240 @@
+{
+  "tasks": [
+    {
+      "id": "task_001",
+      "title": "LinkedIn Kontakte anreichern",
+      "description": "Add company description, industry and emails for 1,377 contacts via Apollo.io",
+      "status": "backlog",
+      "project": "linkedin",
+      "tags": [
+        "linkedin",
+        "accessibleai",
+        "applai"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Apollo.io Account reaktivieren",
+          "done": false
+        },
+        {
+          "id": "sub_002",
+          "title": "API-Key holen",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Enrichment-Script schreiben",
+          "done": false
+        },
+        {
+          "id": "sub_004",
+          "title": "Daten anreichern",
+          "done": false
+        }
+      ],
+      "priority": "high",
+      "createdAt": "2026-01-28T15:00:00Z",
+      "sortOrder": 0
+    },
+    {
+      "id": "task_002",
+      "title": "LinkedIn Kontakte segmentieren",
+      "description": "Categorize 1,377 contacts by segment and product fit",
+      "status": "in_progress",
+      "project": "linkedin",
+      "tags": [
+        "linkedin",
+        "accessibleai"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Export importieren",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Auto-Segmentierung (306 Kontakte)",
+          "done": true
+        },
+        {
+          "id": "sub_003",
+          "title": "Manuelle Nacharbeit",
+          "done": false
+        }
+      ],
+      "priority": "high",
+      "createdAt": "2026-01-28T14:00:00Z"
+    },
+    {
+      "id": "task_003",
+      "title": "Top 50 accessibleAI Leads kontaktieren",
+      "description": "Initial outreach to best leads (E-Commerce, agencies, banks)",
+      "status": "backlog",
+      "project": "accessibleai",
+      "tags": [
+        "accessibleai",
+        "linkedin"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-01-28T15:30:00Z",
+      "sortOrder": 0
+    },
+    {
+      "id": "task_004",
+      "title": "Top 20 applAI Recruiter kontaktieren",
+      "description": "Reach out directly to IT recruiters and headhunters",
+      "status": "backlog",
+      "project": "applai",
+      "tags": [
+        "applai",
+        "linkedin"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-01-28T15:30:00Z",
+      "sortOrder": 1
+    },
+    {
+      "id": "task_005",
+      "title": "Erster LinkedIn Post (BFSG)",
+      "description": "Prepare and post content about BFSG deadline",
+      "status": "backlog",
+      "project": "accessibleai",
+      "tags": [
+        "accessibleai",
+        "linkedin"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Post-Text schreiben",
+          "done": false
+        },
+        {
+          "id": "sub_002",
+          "title": "Bild/Grafik erstellen",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Thomas zur Freigabe",
+          "done": false
+        }
+      ],
+      "priority": "medium",
+      "createdAt": "2026-01-28T16:00:00Z",
+      "sortOrder": 2
+    },
+    {
+      "id": "task_006",
+      "title": "E-Mail-Regeln einhalten",
+      "description": "Gelesene E-Mails niemals erwähnen. Nur is:unread in:inbox.",
+      "status": "permanent",
+      "project": "system",
+      "tags": [
+        "system"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-01-28T16:20:00Z"
+    },
+    {
+      "id": "task_007",
+      "title": "GitHub Auth implementieren",
+      "description": "Login with GitHub Token for dashboard editing",
+      "status": "in_progress",
+      "project": "system",
+      "tags": [
+        "system"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Auth Modal",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Token Validation",
+          "done": true
+        },
+        {
+          "id": "sub_003",
+          "title": "LocalStorage",
+          "done": true
+        },
+        {
+          "id": "sub_004",
+          "title": "User Profile Display",
+          "done": true
+        }
+      ],
+      "priority": "high",
+      "createdAt": "2026-01-28T19:15:00Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "linkedin",
+      "name": "LinkedIn Marketing",
+      "color": "#0077b5",
+      "icon": "💼"
+    },
+    {
+      "id": "accessibleai",
+      "name": "accessibleAI",
+      "color": "#10b981",
+      "icon": "♿"
+    },
+    {
+      "id": "applai",
+      "name": "applAI",
+      "color": "#8b5cf6",
+      "icon": "👨‍💼"
+    },
+    {
+      "id": "system",
+      "name": "System",
+      "color": "#6b7280",
+      "icon": "⚙️"
+    }
+  ],
+  "activities": [
+    {
+      "type": "created",
+      "actor": "MoltBot",
+      "task": "Implement GitHub Auth",
+      "time": "just now"
+    },
+    {
+      "type": "created",
+      "actor": "MoltBot",
+      "task": "Build Mission Control",
+      "time": "30 minutes ago"
+    },
+    {
+      "type": "moved",
+      "actor": "MoltBot",
+      "task": "Segment LinkedIn Contacts",
+      "from": "backlog",
+      "to": "in_progress",
+      "time": "2 hours ago"
+    },
+    {
+      "type": "completed",
+      "actor": "MoltBot",
+      "task": "Accepted 91 LinkedIn invitations",
+      "time": "3 hours ago"
+    },
+    {
+      "type": "created",
+      "actor": "MoltBot",
+      "task": "Enrich LinkedIn Contacts",
+      "time": "3 hours ago"
+    }
+  ],
+  "lastUpdated": "2026-01-29T19:19:34.314Z"
+}
