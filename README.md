@@ -191,6 +191,30 @@ mission-control/                  # MoltBot Skill
 
 ---
 
+## Troubleshooting
+
+### "Cannot find package 'undici'" during installation
+
+This error comes from the ClawdHub CLI, not Mission Control:
+
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'undici' imported from .../clawdhub/dist/http.js
+```
+
+**Fix:** Reinstall ClawdHub to ensure all dependencies are properly installed:
+
+```bash
+npm install -g clawdhub
+```
+
+Then retry the installation:
+
+```bash
+clawdhub install mission-control
+```
+
+---
+
 ## Community & Support
 
 - 💬 **Discord:** [discord.gg/clawd](https://discord.gg/clawd) — MoltBot community (8.9K+ members)
