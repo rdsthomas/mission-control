@@ -2902,6 +2902,83 @@
             }, 3000);
         }
 
+        // === MARKDOWN RENDERER ===
+        function renderMarkdown(text) {
+            if (!text) return '';
+            
+            // Escape HTML first to prevent XSS
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            
+            // Bold: **text** or __text__
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+            
+            // Italic: *text* or _text_ (but not inside words)
+            html = html.replace(/(?<!\w)\*(?!\*)(.+?)(?<!\*)\*(?!\w)/g, '<em>$1</em>');
+            html = html.replace(/(?<!\w)_(?!_)(.+?)(?<!_)_(?!\w)/g, '<em>$1</em>');
+            
+            // Inline code: `code`
+            html = html.replace(/`([^`]+)`/g, '<code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em;">$1</code>');
+            
+            // Links: [text](url)
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: var(--accent-blue);">$1</a>');
+            
+            // URLs without markdown (auto-link)
+            html = html.replace(/(^|[^"=])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" style="color: var(--accent-blue);">$2</a>');
+            
+            // Checkboxes: ✅ and ☑️ (already rendered, just style them)
+            // Keep emojis as-is
+            
+            // Tables: | col | col |
+            if (html.includes('|') && html.split('\n').some(line => line.trim().startsWith('|'))) {
+                const lines = html.split('\n');
+                let inTable = false;
+                let tableHtml = '';
+                const result = [];
+                
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                        if (!inTable) {
+                            inTable = true;
+                            tableHtml = '<table style="border-collapse: collapse; margin: 8px 0; font-size: 0.85em; width: 100%;">';
+                        }
+                        // Skip separator rows (|---|---|)
+                        if (trimmed.match(/^\|[\s\-:]+\|$/)) continue;
+                        
+                        const cells = trimmed.slice(1, -1).split('|').map(c => c.trim());
+                        const isHeader = !tableHtml.includes('<tr>');
+                        const cellTag = isHeader ? 'th' : 'td';
+                        const cellStyle = isHeader 
+                            ? 'style="border: 1px solid var(--border); padding: 6px 10px; background: var(--bg-secondary); text-align: left;"'
+                            : 'style="border: 1px solid var(--border); padding: 6px 10px;"';
+                        tableHtml += `<tr>${cells.map(c => `<${cellTag} ${cellStyle}>${c}</${cellTag}>`).join('')}</tr>`;
+                    } else {
+                        if (inTable) {
+                            inTable = false;
+                            tableHtml += '</table>';
+                            result.push(tableHtml);
+                            tableHtml = '';
+                        }
+                        result.push(line);
+                    }
+                }
+                if (inTable) {
+                    tableHtml += '</table>';
+                    result.push(tableHtml);
+                }
+                html = result.join('\n');
+            }
+            
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
+        }
+
         // === RENDER FUNCTIONS ===
         function renderTasks(animate = false) {
             const columns = ['permanent', 'backlog', 'in_progress', 'review', 'done'];
@@ -3814,7 +3891,7 @@
                             <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">🗑️</button>
                         </span>
                     </div>
-                    <div class="comment-text" id="comment-text-${idx}">${c.text}</div>
+                    <div class="comment-text" id="comment-text-${idx}">${renderMarkdown(c.text)}</div>
                 </div>
             `).join('');
         }
