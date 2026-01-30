@@ -1,240 +1,136 @@
 {
   "tasks": [
     {
-      "id": "task_001",
-      "title": "LinkedIn Kontakte anreichern",
-      "description": "Add company description, industry and emails for 1,377 contacts via Apollo.io",
-      "status": "backlog",
-      "project": "linkedin",
-      "tags": [
-        "linkedin",
-        "accessibleai",
-        "applai"
-      ],
+      "id": "task_welcome",
+      "title": "Welcome to Mission Control!",
+      "description": "This is a sample task to help you get started.\n\n**Getting Started:**\n1. Connect your GitHub token (repo scope)\n2. Create your first task with the + button\n3. Drag tasks between columns\n\nYour AI assistant can also create and manage tasks via chat!",
+      "status": "permanent",
+      "project": "demo",
+      "tags": ["demo", "onboarding"],
       "subtasks": [
-        {
-          "id": "sub_001",
-          "title": "Apollo.io Account reaktivieren",
-          "done": false
-        },
-        {
-          "id": "sub_002",
-          "title": "API-Key holen",
-          "done": false
-        },
-        {
-          "id": "sub_003",
-          "title": "Enrichment-Script schreiben",
-          "done": false
-        },
-        {
-          "id": "sub_004",
-          "title": "Daten anreichern",
-          "done": false
-        }
+        { "id": "sub_001", "title": "Connect GitHub token", "done": false },
+        { "id": "sub_002", "title": "Create your first task", "done": false },
+        { "id": "sub_003", "title": "Try drag & drop", "done": false }
       ],
       "priority": "high",
-      "createdAt": "2026-01-28T15:00:00Z",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "comments": [
+        {
+          "id": "c1",
+          "author": "Clawdbot",
+          "text": "Welcome! 👋 I'm your AI assistant. Move this task to **Done** when you've completed the onboarding steps.",
+          "createdAt": "2026-01-01T00:00:00Z"
+        }
+      ],
       "sortOrder": 0
     },
     {
-      "id": "task_002",
-      "title": "LinkedIn Kontakte segmentieren",
-      "description": "Categorize 1,377 contacts by segment and product fit",
-      "status": "in_progress",
-      "project": "linkedin",
-      "tags": [
-        "linkedin",
-        "accessibleai"
-      ],
+      "id": "task_sample_1",
+      "title": "Implement Dark Mode",
+      "description": "Add a dark/light theme toggle to the application.\n\n**Requirements:**\n- Use CSS custom properties\n- Persist preference in localStorage\n- Respect system preference",
+      "status": "backlog",
+      "project": "demo",
+      "tags": ["feature", "ui"],
       "subtasks": [
-        {
-          "id": "sub_001",
-          "title": "Export importieren",
-          "done": true
-        },
-        {
-          "id": "sub_002",
-          "title": "Auto-Segmentierung (306 Kontakte)",
-          "done": true
-        },
-        {
-          "id": "sub_003",
-          "title": "Manuelle Nacharbeit",
-          "done": false
-        }
+        { "id": "sub_001", "title": "Define color variables", "done": false },
+        { "id": "sub_002", "title": "Create toggle component", "done": false },
+        { "id": "sub_003", "title": "Persist preference", "done": false },
+        { "id": "sub_004", "title": "Detect system preference", "done": false }
       ],
-      "priority": "high",
-      "createdAt": "2026-01-28T14:00:00Z"
-    },
-    {
-      "id": "task_003",
-      "title": "Top 50 accessibleAI Leads kontaktieren",
-      "description": "Initial outreach to best leads (E-Commerce, agencies, banks)",
-      "status": "backlog",
-      "project": "accessibleai",
-      "tags": [
-        "accessibleai",
-        "linkedin"
-      ],
-      "subtasks": [],
       "priority": "medium",
-      "createdAt": "2026-01-28T15:30:00Z",
-      "sortOrder": 0
-    },
-    {
-      "id": "task_004",
-      "title": "Top 20 applAI Recruiter kontaktieren",
-      "description": "Reach out directly to IT recruiters and headhunters",
-      "status": "backlog",
-      "project": "applai",
-      "tags": [
-        "applai",
-        "linkedin"
-      ],
-      "subtasks": [],
-      "priority": "medium",
-      "createdAt": "2026-01-28T15:30:00Z",
+      "createdAt": "2026-01-02T10:00:00Z",
+      "comments": [],
       "sortOrder": 1
     },
     {
-      "id": "task_005",
-      "title": "Erster LinkedIn Post (BFSG)",
-      "description": "Prepare and post content about BFSG deadline",
+      "id": "task_sample_2",
+      "title": "Write API Documentation",
+      "description": "Document the REST API endpoints for the task management system.",
       "status": "backlog",
-      "project": "accessibleai",
-      "tags": [
-        "accessibleai",
-        "linkedin"
-      ],
-      "subtasks": [
-        {
-          "id": "sub_001",
-          "title": "Post-Text schreiben",
-          "done": false
-        },
-        {
-          "id": "sub_002",
-          "title": "Bild/Grafik erstellen",
-          "done": false
-        },
-        {
-          "id": "sub_003",
-          "title": "Thomas zur Freigabe",
-          "done": false
-        }
-      ],
-      "priority": "medium",
-      "createdAt": "2026-01-28T16:00:00Z",
+      "project": "demo",
+      "tags": ["docs"],
+      "subtasks": [],
+      "priority": "low",
+      "createdAt": "2026-01-02T11:00:00Z",
+      "comments": [],
       "sortOrder": 2
     },
     {
-      "id": "task_006",
-      "title": "E-Mail-Regeln einhalten",
-      "description": "Gelesene E-Mails niemals erwähnen. Nur is:unread in:inbox.",
-      "status": "permanent",
-      "project": "system",
-      "tags": [
-        "system"
-      ],
-      "subtasks": [],
-      "priority": "high",
-      "createdAt": "2026-01-28T16:20:00Z"
-    },
-    {
-      "id": "task_007",
-      "title": "GitHub Auth implementieren",
-      "description": "Login with GitHub Token for dashboard editing",
+      "id": "task_sample_3",
+      "title": "Fix Mobile Layout",
+      "description": "The Kanban board doesn't display correctly on mobile devices.\n\n**Issues:**\n- Columns stack incorrectly\n- Drag & drop doesn't work on touch\n- Text overflows on small screens",
       "status": "in_progress",
-      "project": "system",
-      "tags": [
-        "system"
-      ],
+      "project": "demo",
+      "tags": ["bug", "mobile"],
       "subtasks": [
+        { "id": "sub_001", "title": "Fix column layout", "done": true },
+        { "id": "sub_002", "title": "Add touch support", "done": false },
+        { "id": "sub_003", "title": "Fix text overflow", "done": false }
+      ],
+      "priority": "high",
+      "createdAt": "2026-01-03T09:00:00Z",
+      "comments": [
         {
-          "id": "sub_001",
-          "title": "Auth Modal",
-          "done": true
-        },
-        {
-          "id": "sub_002",
-          "title": "Token Validation",
-          "done": true
-        },
-        {
-          "id": "sub_003",
-          "title": "LocalStorage",
-          "done": true
-        },
-        {
-          "id": "sub_004",
-          "title": "User Profile Display",
-          "done": true
+          "id": "c1",
+          "author": "Clawdbot",
+          "text": "Started working on this. Column layout is fixed, working on touch support next.",
+          "createdAt": "2026-01-03T14:30:00Z"
         }
       ],
+      "sortOrder": 0,
+      "processingStartedAt": "2026-01-03T14:00:00Z"
+    },
+    {
+      "id": "task_sample_4",
+      "title": "Add Export Feature",
+      "description": "Allow users to export their tasks as JSON or CSV.",
+      "status": "review",
+      "project": "demo",
+      "tags": ["feature"],
+      "subtasks": [
+        { "id": "sub_001", "title": "Add export button", "done": true },
+        { "id": "sub_002", "title": "Implement JSON export", "done": true },
+        { "id": "sub_003", "title": "Implement CSV export", "done": true }
+      ],
+      "priority": "medium",
+      "createdAt": "2026-01-01T15:00:00Z",
+      "completedAt": "2026-01-04T16:00:00Z",
+      "comments": [
+        {
+          "id": "c1",
+          "author": "Clawdbot",
+          "text": "✅ **Export feature complete!**\n\n| Format | Status |\n|--------|--------|\n| JSON | ✅ Working |\n| CSV | ✅ Working |\n\nReady for review.",
+          "createdAt": "2026-01-04T16:00:00Z"
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "task_sample_5",
+      "title": "Setup CI/CD Pipeline",
+      "description": "Configure GitHub Actions for automated testing and deployment.",
+      "status": "done",
+      "project": "demo",
+      "tags": ["devops"],
+      "subtasks": [
+        { "id": "sub_001", "title": "Create workflow file", "done": true },
+        { "id": "sub_002", "title": "Add test step", "done": true },
+        { "id": "sub_003", "title": "Add deploy step", "done": true }
+      ],
       "priority": "high",
-      "createdAt": "2026-01-28T19:15:00Z"
+      "createdAt": "2025-12-28T10:00:00Z",
+      "completedAt": "2025-12-30T14:00:00Z",
+      "comments": [],
+      "sortOrder": 0,
+      "archived": false
     }
   ],
   "projects": [
     {
-      "id": "linkedin",
-      "name": "LinkedIn Marketing",
-      "color": "#0077b5",
-      "icon": "💼"
-    },
-    {
-      "id": "accessibleai",
-      "name": "accessibleAI",
-      "color": "#10b981",
-      "icon": "♿"
-    },
-    {
-      "id": "applai",
-      "name": "applAI",
-      "color": "#8b5cf6",
-      "icon": "👨‍💼"
-    },
-    {
-      "id": "system",
-      "name": "System",
-      "color": "#6b7280",
-      "icon": "⚙️"
+      "id": "demo",
+      "name": "Demo Project",
+      "emoji": "🎯",
+      "color": "#3b82f6"
     }
-  ],
-  "activities": [
-    {
-      "type": "created",
-      "actor": "MoltBot",
-      "task": "Implement GitHub Auth",
-      "time": "just now"
-    },
-    {
-      "type": "created",
-      "actor": "MoltBot",
-      "task": "Build Mission Control",
-      "time": "30 minutes ago"
-    },
-    {
-      "type": "moved",
-      "actor": "MoltBot",
-      "task": "Segment LinkedIn Contacts",
-      "from": "backlog",
-      "to": "in_progress",
-      "time": "2 hours ago"
-    },
-    {
-      "type": "completed",
-      "actor": "MoltBot",
-      "task": "Accepted 91 LinkedIn invitations",
-      "time": "3 hours ago"
-    },
-    {
-      "type": "created",
-      "actor": "MoltBot",
-      "task": "Enrich LinkedIn Contacts",
-      "time": "3 hours ago"
-    }
-  ],
-  "lastUpdated": "2026-01-29T19:19:34.314Z"
+  ]
 }

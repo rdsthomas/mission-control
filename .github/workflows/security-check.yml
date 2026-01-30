@@ -1,0 +1,128 @@
+name: Security Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+      
+      - name: Check for private paths
+        run: |
+          echo "🔍 Scanning for private paths..."
+          
+          FOUND_ISSUES=0
+          
+          # Patterns that should not appear
+          PATTERNS=(
+            "/Users/[a-zA-Z]"
+            "/home/[a-zA-Z]"
+            "thomashuhn"
+            "jeannie-control"
+            "@rockstardevelopers"
+            "@accessibleai"
+          )
+          
+          for pattern in "${PATTERNS[@]}"; do
+            echo "Checking pattern: $pattern"
+            if grep -rE "$pattern" \
+                --include="*.html" \
+                --include="*.js" \
+                --include="*.mjs" \
+                --include="*.json" \
+                --include="*.md" \
+                --include="*.sh" \
+                --exclude-dir=".git" \
+                --exclude="security-check.yml" \
+                . 2>/dev/null; then
+              echo "❌ Found forbidden pattern: $pattern"
+              FOUND_ISSUES=1
+            fi
+          done
+          
+          if [ $FOUND_ISSUES -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════════════════╗"
+            echo "║  ❌ SECURITY CHECK FAILED                                 ║"
+            echo "║                                                           ║"
+            echo "║  Private paths or patterns found in the code.            ║"
+            echo "║  Please remove them before merging.                       ║"
+            echo "╚═══════════════════════════════════════════════════════════╝"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ No private paths found"
+      
+      - name: Check for hardcoded tokens
+        run: |
+          echo "🔍 Scanning for token patterns..."
+          
+          TOKEN_PATTERNS=(
+            "xoxb-[0-9]"           # Slack bot tokens
+            "xoxp-[0-9]"           # Slack user tokens  
+            "ghp_[a-zA-Z0-9]"      # GitHub PATs
+            "gho_[a-zA-Z0-9]"      # GitHub OAuth
+            "sk-[a-zA-Z0-9]"       # OpenAI keys
+            "AKIA[A-Z0-9]"         # AWS keys
+          )
+          
+          FOUND_TOKENS=0
+          
+          for pattern in "${TOKEN_PATTERNS[@]}"; do
+            if grep -rE "$pattern" \
+                --include="*.html" \
+                --include="*.js" \
+                --include="*.mjs" \
+                --include="*.json" \
+                --include="*.md" \
+                --include="*.sh" \
+                --exclude-dir=".git" \
+                . 2>/dev/null; then
+              echo "❌ Found potential token pattern: $pattern"
+              FOUND_TOKENS=1
+            fi
+          done
+          
+          if [ $FOUND_TOKENS -eq 1 ]; then
+            echo ""
+            echo "╔═══════════════════════════════════════════════════════════╗"
+            echo "║  ❌ POTENTIAL SECRETS DETECTED                            ║"
+            echo "║                                                           ║"
+            echo "║  Token-like patterns found. Please verify these are      ║"
+            echo "║  not real credentials before merging.                     ║"
+            echo "╚═══════════════════════════════════════════════════════════╝"
+            exit 1
+          fi
+          
+          echo "✅ No token patterns found"
+      
+      - name: Summary
+        if: success()
+        run: |
+          echo ""
+          echo "╔═══════════════════════════════════════════════════════════╗"
+          echo "║  ✅ ALL SECURITY CHECKS PASSED                            ║"
+          echo "║                                                           ║"
+          echo "║  • No secrets detected (gitleaks)                        ║"
+          echo "║  • No private paths found                                 ║"
+          echo "║  • No token patterns found                                ║"
+          echo "║                                                           ║"
+          echo "║  Safe to merge! 🚀                                        ║"
+          echo "╚═══════════════════════════════════════════════════════════╝"
