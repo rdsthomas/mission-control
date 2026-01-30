@@ -7,188 +7,126 @@ metadata: {"clawdbot": {"emoji": "🎛️"}}
 
 # Mission Control — Task Management for AI Assistants
 
-A Kanban-style task board that you (the AI assistant) can manage via CLI scripts or direct JSON editing. Includes a web dashboard for the human to visualize and interact with tasks.
+A Kanban-style task board that you (the AI assistant) manage. Your human creates and prioritizes tasks via the web dashboard; you execute them automatically when they're moved to "In Progress".
 
-## Setup
+## 🚀 Quick Start
 
-### First-Time Installation
+**Just say:** *"Set up Mission Control for my workspace"*
 
-Run the setup script to copy dashboard files to your workspace:
+The agent will:
+1. Check prerequisites (Tailscale, gh CLI)
+2. Copy dashboard files to your workspace
+3. Create the config file (`~/.clawdbot/mission-control.json`)
+4. Install the webhook transform
+5. Set up GitHub webhook
+6. Push to GitHub and enable Pages
 
-```bash
-# If installed via ClawdHub:
-<skill>/scripts/mc-setup.sh <workspace>
+**That's it.** The agent handles everything.
 
-# If cloned manually:
-./scripts/mc-setup.sh <workspace>
+---
+
+## Prerequisites
+
+Before setup, you need:
+
+| Requirement | Check | Install |
+|-------------|-------|---------|
+| **Tailscale** | `tailscale status` | `brew install tailscale` or [tailscale.com/download](https://tailscale.com/download) |
+| **Tailscale Funnel** | `tailscale funnel status` | `tailscale funnel 18789` (one-time) |
+| **GitHub CLI** | `gh auth status` | `brew install gh && gh auth login` |
+
+If any are missing, tell the agent — it will guide you through installation.
+
+---
+
+## How It Works
+
+1. **Dashboard** — Web UI hosted on GitHub Pages where humans manage tasks
+2. **Webhook** — GitHub sends push events to Clawdbot when tasks change
+3. **Transform** — Compares old vs new tasks.json, detects status changes
+4. **Auto-Processing** — When a task moves to "In Progress", the agent starts working
+
+### The Flow
+
 ```
-
-This copies from `assets/` to your workspace:
-- `index.html` — Dashboard UI
-- `data/tasks.json` — Task data (with onboarding guides)
-- `scripts/mc-update.sh` — CLI tool
-- `.github/workflows/deploy.yml` — GitHub Pages deployment
-
-### Enable GitHub Pages
-
-1. Push your workspace to GitHub
-2. Go to Settings → Pages
-3. Source: Deploy from branch → main
-4. Your dashboard: `https://[username].github.io/[repo]/`
-
-### Webhook Setup (MoltBot Integration)
-
-GitHub sends a webhook directly to MoltBot whenever the repository is pushed (including task changes).
-
-#### Step 1: Set Up Tailscale Funnel
-
-Tailscale creates a secure tunnel so GitHub can reach your local MoltBot:
-
-```bash
-# Install Tailscale
-brew install tailscale  # macOS
-# or: curl -fsSL https://tailscale.com/install.sh | sh  # Linux
-
-# Start Tailscale
-tailscale up
-
-# Enable Funnel for MoltBot port
-tailscale funnel 18789
-
-# Get your URL
-tailscale funnel status
-# Output: https://your-machine.tail1234.ts.net -> http://127.0.0.1:18789
+Human moves task → GitHub push → Webhook → Transform → Agent receives work order
+      ↓                                                         ↓
+   Dashboard                                              Executes task
+      ↓                                                         ↓
+Agent updates status ← Commits changes ← Marks subtasks done ←─┘
 ```
-
-#### Step 2: Add GitHub Webhook
-
-1. Go to your repo → Settings → Webhooks → Add webhook
-2. **Payload URL:** `https://your-machine.tail1234.ts.net/hooks/github?token=YOUR_TOKEN`
-3. **Content type:** `application/json`
-4. **Events:** Select "Just the push event"
-5. Click "Add webhook"
-
-Generate a secure token:
-```bash
-openssl rand -hex 32
-```
-
-#### Step 3: Verify
-
-Push a change and check:
-- GitHub webhook shows green checkmark (recent deliveries)
-- MoltBot receives the notification
 
 ---
 
 ## Task Structure
 
-Tasks are stored in `<workspace>/data/tasks.json`:
+Tasks live in `<workspace>/data/tasks.json`:
 
 ```json
 {
-  "tasks": [
-    {
-      "id": "task_001",
-      "title": "Implement feature X",
-      "description": "Detailed description with context",
-      "status": "backlog",
-      "project": "devops",
-      "tags": ["devops", "feature"],
-      "subtasks": [
-        { "id": "sub_001", "title": "Research approach", "done": false },
-        { "id": "sub_002", "title": "Write code", "done": false }
-      ],
-      "priority": "high",
-      "comments": [],
-      "createdAt": "2026-01-28T10:00:00Z"
-    }
+  "id": "task_001",
+  "title": "Implement feature X",
+  "description": "Detailed context for the agent",
+  "status": "backlog",
+  "subtasks": [
+    { "id": "sub_001", "title": "Research approach", "done": false },
+    { "id": "sub_002", "title": "Write code", "done": false }
   ],
-  "projects": [
-    { "id": "devops", "name": "DevOps", "color": "#3b82f6", "icon": "💻" }
-  ],
-  "activities": [],
-  "lastUpdated": "2026-01-28T10:00:00Z"
+  "priority": "high",
+  "dod": "Definition of Done - what success looks like",
+  "comments": []
 }
 ```
 
 ### Status Values
 
-| Status | Column | Meaning |
-|--------|--------|---------|
-| `permanent` | 🔄 Permanent | Recurring tasks (daily/weekly checks) |
-| `backlog` | 📋 Backlog | Waiting to be started |
-| `in_progress` | 🚀 In Progress | Currently being worked on |
-| `review` | 👀 Review | Done, awaiting human approval |
-| `done` | ✅ Done | Completed |
-
-### Priority Values
-
-- `high` — Urgent, do first
-- `medium` — Normal priority
-- `low` — Can wait
+| Status | Meaning |
+|--------|---------|
+| `permanent` | Recurring tasks (daily checks, etc.) |
+| `backlog` | Waiting to be worked on |
+| `in_progress` | **Agent is working on this** |
+| `review` | Done, awaiting human approval |
+| `done` | Completed and approved |
 
 ---
 
 ## CLI Commands
 
-Use `<skill>/scripts/mc-update.sh` for task management:
+Use `<skill>/scripts/mc-update.sh` for task updates:
 
 ```bash
-# Change task status
-mc-update.sh status <task_id> <new_status>
+# Status changes
+mc-update.sh status <task_id> review
+mc-update.sh status <task_id> done
 
-# Example: Start working on a task
-mc-update.sh status task_001 in_progress
+# Comments
+mc-update.sh comment <task_id> "Progress update..."
 
-# Add a comment
-mc-update.sh comment <task_id> "Your comment here"
+# Subtasks
+mc-update.sh subtask <task_id> sub_1 done
 
-# Add a subtask
-mc-update.sh subtask <task_id> "Subtask title"
+# Complete (moves to review + adds summary)
+mc-update.sh complete <task_id> "Summary of what was done"
 
-# Mark subtask as done
-mc-update.sh done <task_id> <subtask_id>
-
-# Complete task (moves to review + adds summary comment)
-mc-update.sh complete <task_id> "Completion summary"
-
-# Mark task as being processed (prevents duplicate work)
-mc-update.sh start <task_id>
-
-# Push changes to GitHub
+# Push to GitHub
 mc-update.sh push "Commit message"
 ```
 
 ---
 
-## Workflow
+## Agent Workflow
 
-### When Human Creates a Task
+When you receive a task (moved to "In Progress"):
 
-Human adds task via dashboard → appears in Backlog.
+1. **Read** — Check title, description, subtasks, dod
+2. **Mark started** — `mc-update.sh start <task_id>`
+3. **Execute** — Work through subtasks, mark each done
+4. **Document** — Add progress comments
+5. **Complete** — `mc-update.sh complete <task_id> "Summary"`
 
-### When Human Moves Task to "In Progress"
+### Handling Rework
 
-This is your signal to start working! GitHub webhook notifies you.
-
-1. **Read the task** — Check title, description, subtasks
-2. **Mark as started** — `mc-update.sh start <task_id>` (prevents duplicate processing)
-3. **Work through subtasks** — Mark each done as you complete them
-4. **Add progress comments** — Keep human informed
-5. **Complete the task** — `mc-update.sh complete <task_id> "Summary of what was done"`
-
-### When Task is in "Review"
-
-Human reviews your work. They may:
-- **Approve** → Move to Done
-- **Request changes** → Add comment with feedback, move back to In Progress
-
-If moved back to In Progress with a comment, that's feedback for you to address.
-
-### Handling Feedback
-
-When you see a task in "In Progress" with recent comments:
+If a completed task is moved back to "In Progress" with a new comment:
 1. Read the feedback comment
 2. Address the issues
 3. Add a comment explaining your changes
@@ -196,125 +134,63 @@ When you see a task in "In Progress" with recent comments:
 
 ---
 
-## Best Practices
+## EPICs
 
-### Writing Good Task Descriptions
+EPICs are parent tasks with multiple child tickets. When you receive an EPIC:
 
-Help yourself succeed — write clear descriptions:
-
-```
-BAD:  "Fix the bug"
-GOOD: "Fix login redirect bug — users redirected to /home instead of /dashboard after OAuth. Check auth callback handler."
-```
-
-### Using Subtasks
-
-Break complex tasks into steps:
-
-```json
-"subtasks": [
-  { "id": "sub_001", "title": "Reproduce the issue", "done": false },
-  { "id": "sub_002", "title": "Identify root cause", "done": false },
-  { "id": "sub_003", "title": "Implement fix", "done": false },
-  { "id": "sub_004", "title": "Write test", "done": false }
-]
-```
-
-### Adding Useful Comments
-
-Comments create a work log:
-
-```bash
-mc-update.sh comment task_001 "Found the bug — redirect URL was hardcoded. Fixing now."
-mc-update.sh comment task_001 "Fix deployed. Tested with 3 OAuth providers."
-```
-
-### Completion Summaries
-
-When completing, summarize what was done:
-
-```bash
-mc-update.sh complete task_001 "Fixed OAuth redirect by using dynamic returnUrl from session. Added regression test. Tested with Google, GitHub, and Microsoft OAuth."
-```
+1. Child tickets are listed in the subtasks (format: `MC-XXX-001: Title`)
+2. Work through them sequentially (1 → 2 → 3...)
+3. After each child: comment result, set to "review", mark EPIC subtask done
+4. After last child: set EPIC to "review"
 
 ---
 
-## Direct JSON Editing
+## Heartbeat Integration
 
-For complex operations, edit `<workspace>/data/tasks.json` directly:
-
-### Add a New Task
-
-```python
-import json
-from datetime import datetime
-
-with open('data/tasks.json', 'r') as f:
-    data = json.load(f)
-
-new_task = {
-    "id": f"task_{len(data['tasks']) + 1:03d}",
-    "title": "New task title",
-    "description": "Task description",
-    "status": "backlog",
-    "project": "devops",
-    "tags": ["devops"],
-    "subtasks": [],
-    "priority": "medium",
-    "comments": [],
-    "createdAt": datetime.utcnow().isoformat() + "Z"
-}
-
-data['tasks'].append(new_task)
-data['lastUpdated'] = datetime.utcnow().isoformat() + "Z"
-
-with open('data/tasks.json', 'w') as f:
-    json.dump(data, f, indent=2)
-```
-
----
-
-## Integration with Heartbeat
-
-Add to your `<workspace>/HEARTBEAT.md`:
+Add to your `HEARTBEAT.md`:
 
 ```markdown
 ## Task Check
 
-1. Check `data/tasks.json` for tasks with status "in_progress"
-2. If any have `processingStartedAt` but no recent activity, flag as potentially stale
-3. Check for tasks in "review" with new comments (feedback to address)
+1. Check `data/tasks.json` for tasks in "in_progress"
+2. Flag tasks with `processingStartedAt` but no recent activity
+3. Check "review" tasks for new feedback comments
+```
+
+---
+
+## Configuration
+
+Config lives in `~/.clawdbot/mission-control.json`. See `assets/examples/CONFIG-REFERENCE.md` for all options.
+
+Minimal config (set by agent during setup):
+
+```json
+{
+  "gateway": { "hookToken": "your-token" },
+  "workspace": { "path": "/path/to/workspace" },
+  "slack": { "botToken": "xoxb-...", "channel": "C0123456789" }
+}
 ```
 
 ---
 
 ## Troubleshooting
 
-### Dashboard shows sample data
+See `docs/TROUBLESHOOTING.md` for common issues:
 
-You're not logged in. Click "Connect GitHub" and add your Personal Access Token with `repo` scope.
-
-### Changes not appearing
-
-GitHub Pages caches content. Try:
-- Hard refresh (Cmd+Shift+R)
-- Wait 1-2 minutes for deploy
-- Check Actions tab for deploy status
-
-### Webhook not triggering
-
-1. Check repo Settings → Webhooks → Recent Deliveries
-2. Verify Tailscale Funnel is running: `tailscale funnel status`
-3. Check MoltBot logs for incoming webhook
+- Dashboard shows sample data → Connect GitHub token
+- Webhook not triggering → Check Tailscale Funnel
+- Changes not appearing → GitHub Pages cache (wait 1-2 min)
 
 ---
 
-## Files Reference
+## Files
 
 | File | Purpose |
 |------|---------|
 | `<workspace>/index.html` | Dashboard UI |
 | `<workspace>/data/tasks.json` | Task data |
-| `<workspace>/.github/workflows/deploy.yml` | GitHub Pages deployment |
 | `<skill>/scripts/mc-update.sh` | CLI tool |
-| `<skill>/scripts/mc-setup.sh` | Setup script |
+| `~/.clawdbot/mission-control.json` | Config |
+| `~/.clawdbot/hooks-transforms/github-mission-control.mjs` | Webhook transform |
