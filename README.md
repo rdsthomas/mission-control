@@ -53,8 +53,22 @@ Your data stays yours. Mission Control runs on GitHub Pages from your own repo. 
 - 🔔 **Webhooks** — Clawdbot gets notified instantly when you move tasks
 - 🎨 **Projects & Tags** — Organize by project, filter by context
 - 🧩 **Dynamic Config** — Environment variable fallbacks for flexible deployment
+- 🧠 **Brain Tab** — Long-term memory with daily notes, tags, and changelogs
+- 🔌 **Skills Management** — View and configure your AI assistant's capabilities
 
 ![Task Editor](docs/images/task-edit.png)
+
+### Skills Tab
+
+Manage your AI assistant's capabilities. See what's installed, what needs setup, and browse ClawdHub for more.
+
+![Skills Tab](docs/images/skills.png)
+
+### Brain Tab
+
+Your AI's memory, visualized. Edit MEMORY.md, browse daily notes, and track knowledge over time.
+
+![Brain Tab](docs/images/brain.png)
 
 ---
 
