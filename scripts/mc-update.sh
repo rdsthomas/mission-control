@@ -13,10 +13,31 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_DIR="$(dirname "$SCRIPT_DIR")"
+WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Dashboard repo can be configured via MC_REPO_DIR environment variable
+# Default: look for data/tasks.json in parent directory (mission-control repo structure)
+if [[ -n "$MC_REPO_DIR" ]]; then
+    REPO_DIR="$MC_REPO_DIR"
+elif [[ -f "$WORKSPACE_DIR/data/tasks.json" ]]; then
+    REPO_DIR="$WORKSPACE_DIR"
+elif [[ -d "$WORKSPACE_DIR/mission-control" && -f "$WORKSPACE_DIR/mission-control/data/tasks.json" ]]; then
+    REPO_DIR="$WORKSPACE_DIR/mission-control"
+else
+    echo "Error: Cannot find tasks.json. Set MC_REPO_DIR or run from mission-control repo."
+    exit 1
+fi
 TASKS_FILE="$REPO_DIR/data/tasks.json"
 
 cd "$REPO_DIR"
+
+# ALWAYS pull latest to avoid overwriting Dashboard changes
+git pull --rebase origin main --quiet 2>/dev/null || {
+    # If rebase fails (conflict), abort and force-pull
+    git rebase --abort 2>/dev/null || true
+    git fetch origin main --quiet
+    git reset --hard origin/main --quiet
+}
 
 case "$1" in
     status)
