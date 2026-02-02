@@ -227,7 +227,7 @@
       "id": "task_dashboard_redesign",
       "title": "🎨 Dashboard UI Redesign",
       "description": "Modern redesign of the main dashboard with improved UX.\n\n**Goals:**\n- Cleaner visual hierarchy\n- Better mobile responsiveness\n- Dark mode support\n- Faster load times\n\n**Design system:** Tailwind CSS + Radix UI",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "project": "frontend",
       "tags": [
@@ -258,7 +258,9 @@
           "title": "Implement dark mode",
           "done": false
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:30:22.745Z",
+      "sortOrder": 0
     },
     {
       "id": "task_k8s_migration",
@@ -302,7 +304,7 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:20.946Z",
-      "sortOrder": 5
+      "sortOrder": 0
     },
     {
       "id": "task_analytics_pipeline",
@@ -835,8 +837,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:20.946Z",
+  "lastUpdated": "2026-02-02T23:30:22.745Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "rdsthomas",
+      "task": "🎨 Dashboard UI Redesign",
+      "from": "backlog",
+      "to": "done",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "rdsthomas",
