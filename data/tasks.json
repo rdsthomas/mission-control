@@ -7,17 +7,45 @@
       "status": "in_progress",
       "priority": "high",
       "project": "backend",
-      "tags": ["api", "graphql", "v2"],
+      "tags": [
+        "api",
+        "graphql",
+        "v2"
+      ],
       "createdAt": "2026-01-28T09:00:00.000Z",
       "updatedAt": "2026-02-01T14:30:00.000Z",
       "processingStartedAt": "2026-02-01T23:45:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Design GraphQL schema", "done": true},
-        {"id": "sub2", "title": "Implement query resolvers", "done": true},
-        {"id": "sub3", "title": "Implement mutation resolvers", "done": false},
-        {"id": "sub4", "title": "Add authentication layer", "done": false},
-        {"id": "sub5", "title": "Write API documentation", "done": false},
-        {"id": "sub6", "title": "Performance testing", "done": false}
+        {
+          "id": "sub1",
+          "title": "Design GraphQL schema",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Implement query resolvers",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Implement mutation resolvers",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Add authentication layer",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Write API documentation",
+          "done": false
+        },
+        {
+          "id": "sub6",
+          "title": "Performance testing",
+          "done": false
+        }
       ],
       "comments": [
         {
@@ -26,7 +54,7 @@
           "createdAt": "2026-02-01T10:15:00.000Z"
         },
         {
-          "author": "AI Assistant", 
+          "author": "AI Assistant",
           "text": "⚡ **Progress Update**\n\nMutation resolvers 70% complete:\n- `createProject` ✅\n- `updateProject` ✅\n- `deleteProject` ✅\n- `createTask` 🔄 in progress\n\nETA: ~2 hours for remaining mutations.",
           "createdAt": "2026-02-01T23:50:00.000Z"
         }
@@ -39,15 +67,39 @@
       "status": "in_progress",
       "priority": "high",
       "project": "mobile",
-      "tags": ["mobile", "notifications", "firebase"],
+      "tags": [
+        "mobile",
+        "notifications",
+        "firebase"
+      ],
       "createdAt": "2026-01-30T11:00:00.000Z",
       "updatedAt": "2026-02-01T16:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Set up Firebase project", "done": true},
-        {"id": "sub2", "title": "Configure iOS APNs certificates", "done": true},
-        {"id": "sub3", "title": "Implement Android notification handler", "done": true},
-        {"id": "sub4", "title": "Build notification preferences screen", "done": false},
-        {"id": "sub5", "title": "Test on physical devices", "done": false}
+        {
+          "id": "sub1",
+          "title": "Set up Firebase project",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Configure iOS APNs certificates",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Implement Android notification handler",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Build notification preferences screen",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Test on physical devices",
+          "done": false
+        }
       ],
       "comments": [
         {
@@ -64,16 +116,44 @@
       "status": "review",
       "priority": "critical",
       "project": "security",
-      "tags": ["security", "audit", "compliance"],
+      "tags": [
+        "security",
+        "audit",
+        "compliance"
+      ],
       "createdAt": "2026-01-15T08:00:00.000Z",
       "updatedAt": "2026-02-01T18:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Run automated vulnerability scans", "done": true},
-        {"id": "sub2", "title": "Manual penetration testing", "done": true},
-        {"id": "sub3", "title": "Review authentication flows", "done": true},
-        {"id": "sub4", "title": "Check API rate limiting", "done": true},
-        {"id": "sub5", "title": "Document findings", "done": true},
-        {"id": "sub6", "title": "Create remediation plan", "done": true}
+        {
+          "id": "sub1",
+          "title": "Run automated vulnerability scans",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Manual penetration testing",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Review authentication flows",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Check API rate limiting",
+          "done": true
+        },
+        {
+          "id": "sub5",
+          "title": "Document findings",
+          "done": true
+        },
+        {
+          "id": "sub6",
+          "title": "Create remediation plan",
+          "done": true
+        }
       ],
       "comments": [
         {
@@ -90,15 +170,39 @@
       "status": "review",
       "priority": "high",
       "project": "ml",
-      "tags": ["ml", "recommendations", "python"],
+      "tags": [
+        "ml",
+        "recommendations",
+        "python"
+      ],
       "createdAt": "2026-01-20T10:00:00.000Z",
       "updatedAt": "2026-02-01T12:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Data pipeline for user interactions", "done": true},
-        {"id": "sub2", "title": "Train ALS model", "done": true},
-        {"id": "sub3", "title": "Build inference API", "done": true},
-        {"id": "sub4", "title": "Set up A/B test framework", "done": true},
-        {"id": "sub5", "title": "Deploy to staging", "done": true}
+        {
+          "id": "sub1",
+          "title": "Data pipeline for user interactions",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Train ALS model",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Build inference API",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Set up A/B test framework",
+          "done": true
+        },
+        {
+          "id": "sub5",
+          "title": "Deploy to staging",
+          "done": true
+        }
       ],
       "comments": [
         {
@@ -115,14 +219,34 @@
       "status": "backlog",
       "priority": "medium",
       "project": "frontend",
-      "tags": ["ui", "design", "tailwind"],
+      "tags": [
+        "ui",
+        "design",
+        "tailwind"
+      ],
       "createdAt": "2026-01-25T14:00:00.000Z",
       "updatedAt": "2026-01-25T14:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Create Figma mockups", "done": false},
-        {"id": "sub2", "title": "Set up Tailwind config", "done": false},
-        {"id": "sub3", "title": "Build component library", "done": false},
-        {"id": "sub4", "title": "Implement dark mode", "done": false}
+        {
+          "id": "sub1",
+          "title": "Create Figma mockups",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Set up Tailwind config",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Build component library",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Implement dark mode",
+          "done": false
+        }
       ]
     },
     {
@@ -132,15 +256,39 @@
       "status": "backlog",
       "priority": "high",
       "project": "devops",
-      "tags": ["kubernetes", "infrastructure", "devops"],
+      "tags": [
+        "kubernetes",
+        "infrastructure",
+        "devops"
+      ],
       "createdAt": "2026-01-22T09:00:00.000Z",
       "updatedAt": "2026-01-22T09:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Set up GKE cluster", "done": false},
-        {"id": "sub2", "title": "Write Helm charts", "done": false},
-        {"id": "sub3", "title": "Configure ArgoCD", "done": false},
-        {"id": "sub4", "title": "Set up monitoring stack", "done": false},
-        {"id": "sub5", "title": "Migration runbook", "done": false}
+        {
+          "id": "sub1",
+          "title": "Set up GKE cluster",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Write Helm charts",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Configure ArgoCD",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Set up monitoring stack",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Migration runbook",
+          "done": false
+        }
       ]
     },
     {
@@ -150,14 +298,34 @@
       "status": "backlog",
       "priority": "medium",
       "project": "data",
-      "tags": ["analytics", "kafka", "streaming"],
+      "tags": [
+        "analytics",
+        "kafka",
+        "streaming"
+      ],
       "createdAt": "2026-01-27T11:00:00.000Z",
       "updatedAt": "2026-01-27T11:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Deploy Kafka cluster", "done": false},
-        {"id": "sub2", "title": "Define event schemas", "done": false},
-        {"id": "sub3", "title": "Build Flink jobs", "done": false},
-        {"id": "sub4", "title": "Set up ClickHouse", "done": false}
+        {
+          "id": "sub1",
+          "title": "Deploy Kafka cluster",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Define event schemas",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Build Flink jobs",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Set up ClickHouse",
+          "done": false
+        }
       ]
     },
     {
@@ -167,14 +335,33 @@
       "status": "backlog",
       "priority": "low",
       "project": "docs",
-      "tags": ["documentation", "developer-experience"],
+      "tags": [
+        "documentation",
+        "developer-experience"
+      ],
       "createdAt": "2026-01-29T15:00:00.000Z",
       "updatedAt": "2026-01-29T15:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Audit existing docs", "done": false},
-        {"id": "sub2", "title": "Write getting started", "done": false},
-        {"id": "sub3", "title": "Generate API reference", "done": false},
-        {"id": "sub4", "title": "Add code examples", "done": false}
+        {
+          "id": "sub1",
+          "title": "Audit existing docs",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Write getting started",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Generate API reference",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Add code examples",
+          "done": false
+        }
       ]
     },
     {
@@ -184,16 +371,40 @@
       "status": "done",
       "priority": "high",
       "project": "backend",
-      "tags": ["auth", "oauth", "security"],
+      "tags": [
+        "auth",
+        "oauth",
+        "security"
+      ],
       "createdAt": "2026-01-10T10:00:00.000Z",
       "updatedAt": "2026-01-28T16:00:00.000Z",
       "completedAt": "2026-01-28T16:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Implement Google OAuth", "done": true},
-        {"id": "sub2", "title": "Implement GitHub OAuth", "done": true},
-        {"id": "sub3", "title": "Implement Apple Sign In", "done": true},
-        {"id": "sub4", "title": "Account linking logic", "done": true},
-        {"id": "sub5", "title": "Update login UI", "done": true}
+        {
+          "id": "sub1",
+          "title": "Implement Google OAuth",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Implement GitHub OAuth",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Implement Apple Sign In",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Account linking logic",
+          "done": true
+        },
+        {
+          "id": "sub5",
+          "title": "Update login UI",
+          "done": true
+        }
       ],
       "comments": [
         {
@@ -201,7 +412,9 @@
           "text": "✅ All OAuth providers implemented and tested. Account linking works seamlessly.",
           "createdAt": "2026-01-28T15:45:00.000Z"
         }
-      ]
+      ],
+      "archived": true,
+      "archivedAt": "2026-02-02T23:29:45.708Z"
     },
     {
       "id": "task_perf_optimization",
@@ -210,15 +423,34 @@
       "status": "done",
       "priority": "high",
       "project": "frontend",
-      "tags": ["performance", "optimization"],
+      "tags": [
+        "performance",
+        "optimization"
+      ],
       "createdAt": "2026-01-18T09:00:00.000Z",
       "updatedAt": "2026-01-26T14:00:00.000Z",
       "completedAt": "2026-01-26T14:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Implement code splitting", "done": true},
-        {"id": "sub2", "title": "Add image lazy loading", "done": true},
-        {"id": "sub3", "title": "Set up Redis caching", "done": true},
-        {"id": "sub4", "title": "Optimize database queries", "done": true}
+        {
+          "id": "sub1",
+          "title": "Implement code splitting",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Add image lazy loading",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Set up Redis caching",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Optimize database queries",
+          "done": true
+        }
       ],
       "comments": [
         {
@@ -226,7 +458,9 @@
           "text": "📈 **Results:**\n- LCP: 2.8s → 1.4s (-50%)\n- FCP: 1.2s → 0.8s (-33%)\n- Bundle size: 450KB → 280KB (-38%)",
           "createdAt": "2026-01-26T13:30:00.000Z"
         }
-      ]
+      ],
+      "archived": true,
+      "archivedAt": "2026-02-02T23:29:45.708Z"
     },
     {
       "id": "task_ci_pipeline",
@@ -235,16 +469,38 @@
       "status": "done",
       "priority": "medium",
       "project": "devops",
-      "tags": ["ci-cd", "automation", "github-actions"],
+      "tags": [
+        "ci-cd",
+        "automation",
+        "github-actions"
+      ],
       "createdAt": "2026-01-12T11:00:00.000Z",
       "updatedAt": "2026-01-24T10:00:00.000Z",
       "completedAt": "2026-01-24T10:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Optimize Docker builds", "done": true},
-        {"id": "sub2", "title": "Parallel test execution", "done": true},
-        {"id": "sub3", "title": "Add Playwright E2E tests", "done": true},
-        {"id": "sub4", "title": "Set up canary deployments", "done": true}
-      ]
+        {
+          "id": "sub1",
+          "title": "Optimize Docker builds",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Parallel test execution",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Add Playwright E2E tests",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Set up canary deployments",
+          "done": true
+        }
+      ],
+      "archived": true,
+      "archivedAt": "2026-02-02T23:29:45.708Z"
     },
     {
       "id": "task_user_research",
@@ -253,16 +509,38 @@
       "status": "done",
       "priority": "medium",
       "project": "product",
-      "tags": ["research", "ux", "interviews"],
+      "tags": [
+        "research",
+        "ux",
+        "interviews"
+      ],
       "createdAt": "2026-01-08T10:00:00.000Z",
       "updatedAt": "2026-01-22T17:00:00.000Z",
       "completedAt": "2026-01-22T17:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Create interview guide", "done": true},
-        {"id": "sub2", "title": "Schedule interviews", "done": true},
-        {"id": "sub3", "title": "Conduct interviews", "done": true},
-        {"id": "sub4", "title": "Synthesize findings", "done": true}
-      ]
+        {
+          "id": "sub1",
+          "title": "Create interview guide",
+          "done": true
+        },
+        {
+          "id": "sub2",
+          "title": "Schedule interviews",
+          "done": true
+        },
+        {
+          "id": "sub3",
+          "title": "Conduct interviews",
+          "done": true
+        },
+        {
+          "id": "sub4",
+          "title": "Synthesize findings",
+          "done": true
+        }
+      ],
+      "archived": true,
+      "archivedAt": "2026-02-02T23:29:45.708Z"
     },
     {
       "id": "template_code_review",
@@ -271,18 +549,45 @@
       "status": "template",
       "priority": "medium",
       "project": "engineering",
-      "tags": ["template", "code-review"],
+      "tags": [
+        "template",
+        "code-review"
+      ],
       "createdAt": "2026-01-01T00:00:00.000Z",
       "updatedAt": "2026-01-01T00:00:00.000Z",
       "isTemplate": true,
       "executionCount": 12,
       "subtasks": [
-        {"id": "sub1", "title": "Code follows style guide", "done": false},
-        {"id": "sub2", "title": "Tests added/updated", "done": false},
-        {"id": "sub3", "title": "No security vulnerabilities", "done": false},
-        {"id": "sub4", "title": "Documentation updated", "done": false},
-        {"id": "sub5", "title": "Performance considered", "done": false},
-        {"id": "sub6", "title": "Error handling appropriate", "done": false}
+        {
+          "id": "sub1",
+          "title": "Code follows style guide",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Tests added/updated",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "No security vulnerabilities",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Documentation updated",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Performance considered",
+          "done": false
+        },
+        {
+          "id": "sub6",
+          "title": "Error handling appropriate",
+          "done": false
+        }
       ]
     },
     {
@@ -292,17 +597,41 @@
       "status": "template",
       "priority": "medium",
       "project": "engineering",
-      "tags": ["template", "agile", "retro"],
+      "tags": [
+        "template",
+        "agile",
+        "retro"
+      ],
       "createdAt": "2026-01-01T00:00:00.000Z",
       "updatedAt": "2026-01-01T00:00:00.000Z",
       "isTemplate": true,
       "executionCount": 6,
       "subtasks": [
-        {"id": "sub1", "title": "Gather team feedback", "done": false},
-        {"id": "sub2", "title": "Review sprint metrics", "done": false},
-        {"id": "sub3", "title": "Identify improvements", "done": false},
-        {"id": "sub4", "title": "Create action items", "done": false},
-        {"id": "sub5", "title": "Update team processes", "done": false}
+        {
+          "id": "sub1",
+          "title": "Gather team feedback",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Review sprint metrics",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Identify improvements",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Create action items",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Update team processes",
+          "done": false
+        }
       ]
     },
     {
@@ -312,18 +641,46 @@
       "status": "template",
       "priority": "critical",
       "project": "devops",
-      "tags": ["template", "incident", "sre"],
+      "tags": [
+        "template",
+        "incident",
+        "sre"
+      ],
       "createdAt": "2026-01-01T00:00:00.000Z",
       "updatedAt": "2026-01-01T00:00:00.000Z",
       "isTemplate": true,
       "executionCount": 3,
       "subtasks": [
-        {"id": "sub1", "title": "Assess impact and severity", "done": false},
-        {"id": "sub2", "title": "Notify stakeholders", "done": false},
-        {"id": "sub3", "title": "Investigate root cause", "done": false},
-        {"id": "sub4", "title": "Implement fix", "done": false},
-        {"id": "sub5", "title": "Verify resolution", "done": false},
-        {"id": "sub6", "title": "Write post-mortem", "done": false}
+        {
+          "id": "sub1",
+          "title": "Assess impact and severity",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Notify stakeholders",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Investigate root cause",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Implement fix",
+          "done": false
+        },
+        {
+          "id": "sub5",
+          "title": "Verify resolution",
+          "done": false
+        },
+        {
+          "id": "sub6",
+          "title": "Write post-mortem",
+          "done": false
+        }
       ]
     },
     {
@@ -333,14 +690,30 @@
       "status": "scheduled",
       "priority": "high",
       "project": "product",
-      "tags": ["scheduled", "meeting", "quarterly"],
+      "tags": [
+        "scheduled",
+        "meeting",
+        "quarterly"
+      ],
       "createdAt": "2026-01-15T00:00:00.000Z",
       "updatedAt": "2026-01-15T00:00:00.000Z",
       "scheduledAt": "2026-02-03T09:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Gather metrics from analytics", "done": false},
-        {"id": "sub2", "title": "Create slide deck", "done": false},
-        {"id": "sub3", "title": "Review with leadership", "done": false}
+        {
+          "id": "sub1",
+          "title": "Gather metrics from analytics",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Create slide deck",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Review with leadership",
+          "done": false
+        }
       ]
     },
     {
@@ -350,30 +723,108 @@
       "status": "scheduled",
       "priority": "medium",
       "project": "devops",
-      "tags": ["scheduled", "maintenance", "dependencies"],
+      "tags": [
+        "scheduled",
+        "maintenance",
+        "dependencies"
+      ],
       "createdAt": "2026-01-20T00:00:00.000Z",
       "updatedAt": "2026-01-20T00:00:00.000Z",
       "scheduledAt": "2026-02-05T10:00:00.000Z",
       "subtasks": [
-        {"id": "sub1", "title": "Check for security updates", "done": false},
-        {"id": "sub2", "title": "Update npm packages", "done": false},
-        {"id": "sub3", "title": "Update Python dependencies", "done": false},
-        {"id": "sub4", "title": "Run test suite", "done": false}
+        {
+          "id": "sub1",
+          "title": "Check for security updates",
+          "done": false
+        },
+        {
+          "id": "sub2",
+          "title": "Update npm packages",
+          "done": false
+        },
+        {
+          "id": "sub3",
+          "title": "Update Python dependencies",
+          "done": false
+        },
+        {
+          "id": "sub4",
+          "title": "Run test suite",
+          "done": false
+        }
       ]
     }
   ],
   "projects": [
-    {"id": "backend", "name": "Backend", "color": "#8b5cf6", "icon": "⚙️"},
-    {"id": "frontend", "name": "Frontend", "color": "#3b82f6", "icon": "🎨"},
-    {"id": "mobile", "name": "Mobile App", "color": "#10b981", "icon": "📱"},
-    {"id": "devops", "name": "DevOps", "color": "#f59e0b", "icon": "🔧"},
-    {"id": "security", "name": "Security", "color": "#ef4444", "icon": "🔒"},
-    {"id": "ml", "name": "ML/AI", "color": "#ec4899", "icon": "🤖"},
-    {"id": "data", "name": "Data", "color": "#06b6d4", "icon": "📊"},
-    {"id": "docs", "name": "Documentation", "color": "#84cc16", "icon": "📚"},
-    {"id": "product", "name": "Product", "color": "#a855f7", "icon": "💡"},
-    {"id": "engineering", "name": "Engineering", "color": "#6366f1", "icon": "👨‍💻"}
+    {
+      "id": "backend",
+      "name": "Backend",
+      "color": "#8b5cf6",
+      "icon": "⚙️"
+    },
+    {
+      "id": "frontend",
+      "name": "Frontend",
+      "color": "#3b82f6",
+      "icon": "🎨"
+    },
+    {
+      "id": "mobile",
+      "name": "Mobile App",
+      "color": "#10b981",
+      "icon": "📱"
+    },
+    {
+      "id": "devops",
+      "name": "DevOps",
+      "color": "#f59e0b",
+      "icon": "🔧"
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "color": "#ef4444",
+      "icon": "🔒"
+    },
+    {
+      "id": "ml",
+      "name": "ML/AI",
+      "color": "#ec4899",
+      "icon": "🤖"
+    },
+    {
+      "id": "data",
+      "name": "Data",
+      "color": "#06b6d4",
+      "icon": "📊"
+    },
+    {
+      "id": "docs",
+      "name": "Documentation",
+      "color": "#84cc16",
+      "icon": "📚"
+    },
+    {
+      "id": "product",
+      "name": "Product",
+      "color": "#a855f7",
+      "icon": "💡"
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering",
+      "color": "#6366f1",
+      "icon": "👨‍💻"
+    }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-01T23:50:00.000Z"
+  "lastUpdated": "2026-02-01T23:50:00.000Z",
+  "activities": [
+    {
+      "type": "archive",
+      "actor": "rdsthomas",
+      "task": "Archived 4 tasks",
+      "time": "just now"
+    }
+  ]
 }
