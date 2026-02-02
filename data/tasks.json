@@ -110,7 +110,7 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:17.213Z",
-      "sortOrder": 0
+      "sortOrder": 1
     },
     {
       "id": "task_security_audit",
@@ -221,7 +221,7 @@
       "completedAt": "2026-02-02T23:29:49.008Z",
       "archived": true,
       "archivedAt": "2026-02-02T23:29:55.475Z",
-      "sortOrder": 1
+      "sortOrder": 2
     },
     {
       "id": "task_dashboard_redesign",
@@ -264,7 +264,7 @@
       "id": "task_k8s_migration",
       "title": "☸️ Migrate to Kubernetes",
       "description": "Move from Docker Compose to Kubernetes for better scalability.\n\n**Infrastructure:**\n- GKE cluster (3 nodes)\n- Helm charts for all services\n- ArgoCD for GitOps\n- Prometheus + Grafana monitoring\n\n**Timeline:** 4 weeks",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "project": "devops",
       "tags": [
@@ -300,7 +300,9 @@
           "title": "Migration runbook",
           "done": false
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:30:20.946Z",
+      "sortOrder": 5
     },
     {
       "id": "task_analytics_pipeline",
@@ -426,7 +428,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 2
+      "sortOrder": 3
     },
     {
       "id": "task_perf_optimization",
@@ -473,7 +475,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 3
+      "sortOrder": 4
     },
     {
       "id": "task_ci_pipeline",
@@ -833,8 +835,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:17.213Z",
+  "lastUpdated": "2026-02-02T23:30:20.946Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "rdsthomas",
+      "task": "☸️ Migrate to Kubernetes",
+      "from": "backlog",
+      "to": "done",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "rdsthomas",
