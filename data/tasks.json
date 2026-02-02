@@ -349,7 +349,7 @@
       "id": "task_docs_overhaul",
       "title": "📚 Documentation Overhaul",
       "description": "Complete rewrite of developer documentation.\n\n**Sections:**\n- Getting started guide\n- API reference (OpenAPI)\n- Architecture overview\n- Deployment guides\n- Troubleshooting",
-      "status": "backlog",
+      "status": "done",
       "priority": "low",
       "project": "docs",
       "tags": [
@@ -379,7 +379,9 @@
           "title": "Add code examples",
           "done": false
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:30:28.533Z",
+      "sortOrder": 0
     },
     {
       "id": "task_oauth_providers",
@@ -839,8 +841,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:26.576Z",
+  "lastUpdated": "2026-02-02T23:30:28.533Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "rdsthomas",
+      "task": "📚 Documentation Overhaul",
+      "from": "backlog",
+      "to": "done",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "rdsthomas",
