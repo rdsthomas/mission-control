@@ -4,7 +4,7 @@
       "id": "task_api_v2",
       "title": "🚀 Launch API v2.0 with GraphQL Support",
       "description": "Major API upgrade introducing GraphQL alongside REST.\n\n**Scope:**\n- GraphQL schema design\n- Query/mutation resolvers\n- Authentication middleware\n- Rate limiting\n- Documentation\n\n**Resources:**\n- [GraphQL Spec](https://graphql.org/)\n- [Apollo Server Docs](https://apollographql.com/docs/)",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "project": "backend",
       "tags": [
@@ -824,7 +824,7 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:29:53.292Z",
+  "lastUpdated": "2026-02-02T23:30:13.977Z",
   "activities": [
     {
       "type": "archive",
