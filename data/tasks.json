@@ -58,13 +58,14 @@
           "text": "⚡ **Progress Update**\n\nMutation resolvers 70% complete:\n- `createProject` ✅\n- `updateProject` ✅\n- `deleteProject` ✅\n- `createTask` 🔄 in progress\n\nETA: ~2 hours for remaining mutations.",
           "createdAt": "2026-02-01T23:50:00.000Z"
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "task_mobile_push",
       "title": "📱 Implement Push Notifications for Mobile App",
       "description": "Add push notification support for iOS and Android.\n\n**Requirements:**\n- Firebase Cloud Messaging integration\n- iOS APNs setup\n- Notification preferences UI\n- Background sync\n\n**Priority notifications:**\n- Task assignments\n- Due date reminders\n- Mentions in comments",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "project": "mobile",
       "tags": [
@@ -107,7 +108,9 @@
           "text": "✅ Firebase and APNs configured. Android handler working. Moving to preferences UI next.",
           "createdAt": "2026-02-01T15:30:00.000Z"
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:30:17.213Z",
+      "sortOrder": 0
     },
     {
       "id": "task_security_audit",
@@ -164,7 +167,8 @@
       ],
       "completedAt": "2026-02-02T23:29:53.292Z",
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:55.475Z"
+      "archivedAt": "2026-02-02T23:29:55.475Z",
+      "sortOrder": 0
     },
     {
       "id": "task_ml_recommendations",
@@ -216,7 +220,8 @@
       ],
       "completedAt": "2026-02-02T23:29:49.008Z",
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:55.475Z"
+      "archivedAt": "2026-02-02T23:29:55.475Z",
+      "sortOrder": 1
     },
     {
       "id": "task_dashboard_redesign",
@@ -420,7 +425,8 @@
         }
       ],
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:45.708Z"
+      "archivedAt": "2026-02-02T23:29:45.708Z",
+      "sortOrder": 2
     },
     {
       "id": "task_perf_optimization",
@@ -466,7 +472,8 @@
         }
       ],
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:45.708Z"
+      "archivedAt": "2026-02-02T23:29:45.708Z",
+      "sortOrder": 3
     },
     {
       "id": "task_ci_pipeline",
@@ -506,7 +513,8 @@
         }
       ],
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:45.708Z"
+      "archivedAt": "2026-02-02T23:29:45.708Z",
+      "sortOrder": 0
     },
     {
       "id": "task_user_research",
@@ -546,7 +554,8 @@
         }
       ],
       "archived": true,
-      "archivedAt": "2026-02-02T23:29:45.708Z"
+      "archivedAt": "2026-02-02T23:29:45.708Z",
+      "sortOrder": 1
     },
     {
       "id": "template_code_review",
@@ -824,8 +833,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:13.977Z",
+  "lastUpdated": "2026-02-02T23:30:17.213Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "rdsthomas",
+      "task": "📱 Implement Push Notifications for Mobile App",
+      "from": "in_progress",
+      "to": "done",
+      "time": "just now"
+    },
     {
       "type": "archive",
       "actor": "rdsthomas",
