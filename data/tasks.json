@@ -167,7 +167,7 @@
       "id": "task_ml_recommendations",
       "title": "🤖 Build ML-Powered Recommendation Engine",
       "description": "Implement personalized content recommendations using collaborative filtering.\n\n**Algorithm:**\n- Matrix factorization (ALS)\n- Content-based filtering hybrid\n- Real-time inference via Redis\n\n**Metrics:**\n- Target CTR improvement: 15%\n- A/B test duration: 2 weeks",
-      "status": "review",
+      "status": "done",
       "priority": "high",
       "project": "ml",
       "tags": [
@@ -210,7 +210,8 @@
           "text": "📊 **Model Performance**\n\n| Metric | Value |\n|--------|-------|\n| RMSE | 0.82 |\n| Precision@10 | 0.34 |\n| Recall@10 | 0.28 |\n\nReady for A/B testing. Staging deployment complete.",
           "createdAt": "2026-02-01T11:30:00.000Z"
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:29:49.008Z"
     },
     {
       "id": "task_dashboard_redesign",
@@ -818,7 +819,7 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-01T23:50:00.000Z",
+  "lastUpdated": "2026-02-02T23:29:49.008Z",
   "activities": [
     {
       "type": "archive",
