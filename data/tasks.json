@@ -59,7 +59,9 @@
           "createdAt": "2026-02-01T23:50:00.000Z"
         }
       ],
-      "sortOrder": 0
+      "sortOrder": 0,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_mobile_push",
@@ -110,7 +112,9 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:17.213Z",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_security_audit",
@@ -260,7 +264,9 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:22.745Z",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_k8s_migration",
@@ -304,7 +310,9 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:20.946Z",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_analytics_pipeline",
@@ -343,7 +351,9 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:26.576Z",
-      "sortOrder": 0
+      "sortOrder": 0,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_docs_overhaul",
@@ -381,7 +391,9 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:28.533Z",
-      "sortOrder": 0
+      "sortOrder": 0,
+      "archived": true,
+      "archivedAt": "2026-02-02T23:30:31.992Z"
     },
     {
       "id": "task_oauth_providers",
@@ -843,6 +855,12 @@
   "version": 2,
   "lastUpdated": "2026-02-02T23:30:28.533Z",
   "activities": [
+    {
+      "type": "archive",
+      "actor": "rdsthomas",
+      "task": "Archived 6 tasks",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "rdsthomas",
