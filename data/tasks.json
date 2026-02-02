@@ -110,7 +110,7 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:17.213Z",
-      "sortOrder": 1
+      "sortOrder": 2
     },
     {
       "id": "task_security_audit",
@@ -221,7 +221,7 @@
       "completedAt": "2026-02-02T23:29:49.008Z",
       "archived": true,
       "archivedAt": "2026-02-02T23:29:55.475Z",
-      "sortOrder": 2
+      "sortOrder": 3
     },
     {
       "id": "task_dashboard_redesign",
@@ -260,7 +260,7 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:22.745Z",
-      "sortOrder": 0
+      "sortOrder": 1
     },
     {
       "id": "task_k8s_migration",
@@ -304,13 +304,13 @@
         }
       ],
       "completedAt": "2026-02-02T23:30:20.946Z",
-      "sortOrder": 0
+      "sortOrder": 1
     },
     {
       "id": "task_analytics_pipeline",
       "title": "📊 Real-time Analytics Pipeline",
       "description": "Build streaming analytics for real-time dashboards.\n\n**Tech stack:**\n- Apache Kafka for event streaming\n- Apache Flink for processing\n- ClickHouse for storage\n- Grafana for visualization",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "project": "data",
       "tags": [
@@ -341,7 +341,9 @@
           "title": "Set up ClickHouse",
           "done": false
         }
-      ]
+      ],
+      "completedAt": "2026-02-02T23:30:26.576Z",
+      "sortOrder": 0
     },
     {
       "id": "task_docs_overhaul",
@@ -430,7 +432,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 3
+      "sortOrder": 4
     },
     {
       "id": "task_perf_optimization",
@@ -477,7 +479,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 4
+      "sortOrder": 5
     },
     {
       "id": "task_ci_pipeline",
@@ -518,7 +520,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 0
+      "sortOrder": 2
     },
     {
       "id": "task_user_research",
@@ -559,7 +561,7 @@
       ],
       "archived": true,
       "archivedAt": "2026-02-02T23:29:45.708Z",
-      "sortOrder": 1
+      "sortOrder": 3
     },
     {
       "id": "template_code_review",
@@ -837,8 +839,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:22.745Z",
+  "lastUpdated": "2026-02-02T23:30:26.576Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "rdsthomas",
+      "task": "📊 Real-time Analytics Pipeline",
+      "from": "backlog",
+      "to": "done",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "rdsthomas",
