@@ -722,7 +722,7 @@
       "id": "scheduled_quarterly_review",
       "title": "📅 Q1 Quarterly Business Review",
       "description": "Prepare presentation for Q1 QBR meeting.\n\n**Topics:**\n- Revenue & growth metrics\n- Product roadmap progress\n- Team updates\n- Q2 priorities",
-      "status": "scheduled",
+      "status": "in_progress",
       "priority": "high",
       "project": "product",
       "tags": [
@@ -732,7 +732,6 @@
       ],
       "createdAt": "2026-01-15T00:00:00.000Z",
       "updatedAt": "2026-01-15T00:00:00.000Z",
-      "scheduledAt": "2026-02-03T09:00:00.000Z",
       "subtasks": [
         {
           "id": "sub1",
