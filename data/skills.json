@@ -1,161 +1,65 @@
 {
   "skills": [
     {
-      "id": "github",
-      "name": "GitHub",
-      "description": "Interact with GitHub using the `gh` CLI. Manage issues, PRs, CI runs, and API queries.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "🐙",
-      "tags": ["vcs", "collaboration", "ci-cd"],
-      "cliDeps": {
-        "required": ["gh"],
-        "installed": ["gh"]
-      }
-    },
-    {
-      "id": "slack",
-      "name": "Slack",
-      "description": "Send messages, react to posts, and manage channels via the Slack API.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "💬",
-      "tags": ["communication", "team", "notifications"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
-      }
-    },
-    {
-      "id": "notion",
-      "name": "Notion",
-      "description": "Create and manage Notion pages, databases, and blocks via the Notion API.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "📝",
-      "tags": ["documentation", "wiki", "collaboration"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
-      }
-    },
-    {
-      "id": "weather",
-      "name": "Weather",
-      "description": "Get current weather and forecasts for any location. No API key required.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "🌤️",
-      "tags": ["utility", "information"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
+      "id": "join",
+      "name": "JOIN.com API",
+      "description": "JOIN.com API für Recruiting und Bewerbermanagement. Jobs auflisten, Bewerbungen abrufen, Kandidaten verwalten.",
+      "status": "ready",
+      "source": "workspace",
+      "icon": "📦",
+      "configurable": true,
+      "config": {
+        "token": "configured"
       }
     },
     {
       "id": "gog",
       "name": "Google Workspace",
-      "description": "Access Gmail, Calendar, Drive, Contacts, Sheets, and Docs via the gog CLI.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "📧",
-      "tags": ["email", "calendar", "productivity"],
-      "cliDeps": {
-        "required": ["gog"],
-        "installed": ["gog"]
-      }
+      "description": "Gmail, Calendar, Drive, Contacts, Sheets, Docs",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "🎮"
     },
     {
-      "id": "openai-whisper",
-      "name": "OpenAI Whisper",
-      "description": "Local speech-to-text transcription using Whisper. No API key needed.",
-      "source": "builtin",
-      "enabled": false,
-      "configStatus": "missing-deps",
-      "emoji": "🎤",
-      "tags": ["audio", "transcription", "ai"],
-      "cliDeps": {
-        "required": ["whisper", "ffmpeg"],
-        "installed": ["ffmpeg"]
-      }
+      "id": "slack",
+      "name": "Slack",
+      "description": "Slack-Nachrichten senden, reagieren, pinnen",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "💬"
     },
     {
-      "id": "instantly",
-      "name": "Instantly.ai",
-      "description": "Cold email outreach automation. Manage campaigns, leads, and email accounts.",
-      "source": "builtin",
-      "enabled": false,
-      "configStatus": "needs-config",
-      "emoji": "📨",
-      "tags": ["email", "marketing", "outreach"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
-      },
-      "missingConfig": ["INSTANTLY_API_KEY"]
+      "id": "imsg",
+      "name": "iMessage",
+      "description": "iMessage/SMS CLI für Chats und Nachrichten",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "📨"
     },
     {
-      "id": "video-frames",
-      "name": "Video Frames",
-      "description": "Extract frames or short clips from videos using ffmpeg.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "🎬",
-      "tags": ["video", "media", "extraction"],
-      "cliDeps": {
-        "required": ["ffmpeg"],
-        "installed": ["ffmpeg"]
-      }
+      "id": "wacli",
+      "name": "WhatsApp",
+      "description": "WhatsApp Nachrichten senden und History durchsuchen",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "📱"
     },
     {
-      "id": "mcporter",
-      "name": "MCP Porter",
-      "description": "List, configure, and call MCP servers and tools directly from the CLI.",
-      "source": "builtin",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "🔌",
-      "tags": ["mcp", "integration", "tools"],
-      "cliDeps": {
-        "required": ["mcporter"],
-        "installed": ["mcporter"]
-      }
+      "id": "github",
+      "name": "GitHub",
+      "description": "GitHub CLI für Issues, PRs, Repos",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "🐙"
     },
     {
-      "id": "custom-deploy",
-      "name": "Custom Deploy Script",
-      "description": "Workspace-specific deployment automation for staging and production environments.",
-      "source": "workspace",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "🚀",
-      "tags": ["deployment", "custom", "automation"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
-      }
-    },
-    {
-      "id": "project-metrics",
-      "name": "Project Metrics",
-      "description": "Custom workspace skill for tracking project KPIs and generating reports.",
-      "source": "workspace",
-      "enabled": true,
-      "configStatus": "ready",
-      "emoji": "📊",
-      "tags": ["metrics", "reporting", "custom"],
-      "cliDeps": {
-        "required": [],
-        "installed": []
-      }
+      "id": "weather",
+      "name": "Weather",
+      "description": "Wetter und Vorhersagen abrufen",
+      "status": "ready",
+      "source": "bundled",
+      "icon": "🌤️"
     }
   ],
-  "version": 1,
-  "lastUpdated": "2026-02-01T23:50:00.000Z"
+  "lastUpdated": "2026-02-03T14:03:00.000Z"
 }
