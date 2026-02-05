@@ -754,7 +754,7 @@
       "id": "scheduled_dependency_update",
       "title": "🔄 Monthly Dependency Updates",
       "description": "Update all npm and pip dependencies.\n\n**Process:**\n1. Run `npm outdated` / `pip list --outdated`\n2. Review changelogs\n3. Update and test\n4. Create PR",
-      "status": "scheduled",
+      "status": "in_progress",
       "priority": "medium",
       "project": "devops",
       "tags": [
@@ -764,7 +764,6 @@
       ],
       "createdAt": "2026-01-20T00:00:00.000Z",
       "updatedAt": "2026-01-20T00:00:00.000Z",
-      "scheduledAt": "2026-02-05T10:00:00.000Z",
       "subtasks": [
         {
           "id": "sub1",
