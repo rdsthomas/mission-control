@@ -586,7 +586,10 @@ export default async function transform(ctx) {
     const latestCommit = commits[commits.length - 1];
     const commitSha = latestCommit?.id || payload.after || payload.head_commit?.id || '';
     
-    if (!commitSha) throw new Error('No commit SHA in webhook payload');
+    if (!commitSha) {
+      log('No commit SHA found - skipping (non-push event?)', config);
+      return { deliver: false, message: '[skip: no commit SHA]' };
+    }
     
     log(`Fetching from GitHub API for commit ${commitSha.substring(0, 7)}`, config);
     

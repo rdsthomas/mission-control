@@ -4,7 +4,7 @@
 
 > Chat conversations are linear. Projects aren't.
 
-[![Version](https://img.shields.io/badge/version-2.0.0-green)](https://github.com/rdsthomas/mission-control/releases/tag/v2.0.0)
+[![Version](https://img.shields.io/badge/version-2.2.1-green)](https://github.com/rdsthomas/mission-control/releases/tag/v2.2.1)
 [![Status](https://img.shields.io/badge/status-stable-success)](https://github.com/rdsthomas/mission-control)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Clawdbot](https://img.shields.io/badge/Clawdbot-compatible-10b981)](https://github.com/clawdbot/clawdbot)
@@ -252,6 +252,22 @@ For more issues, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 - 📖 **Docs:** [ARCHITECTURE.md](ARCHITECTURE.md) — How it all works
 - 🐛 **Issues:** [GitHub Issues](https://github.com/rdsthomas/mission-control/issues)
 - 🌟 **Star this repo** if Mission Control helps you stay organized!
+
+---
+
+## Security
+
+Mission Control passes human-authored task descriptions to an AI agent for execution. This is the product's core function — not a vulnerability.
+
+**Trust model:** Designed for single-user / trusted-user setups where the task author is the same person who controls the agent. For multi-user scenarios, use Clawdbot's agent sandbox and permission settings.
+
+**Mitigations included:**
+- Input sanitization in `mc-update.sh` (blocks shell injection patterns)
+- Webhook HMAC verification with `timingSafeEqual`
+- Credential scanning before open-source sync
+- No tokens or secrets stored in the dashboard
+
+See [SKILL.md](SKILL.md#security) for full details.
 
 ---
 

@@ -245,6 +245,73 @@
             font-weight: 500;
         }
 
+        /* Version Update Banner */
+        .version-banner {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            animation: versionPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes versionPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .version-banner.visible {
+            display: flex;
+        }
+
+        .version-banner-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .version-banner-text .update-icon {
+            font-size: 1.1rem;
+        }
+
+        .version-banner .btn-refresh {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .version-banner .btn-refresh:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .version-banner .btn-dismiss {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            font-size: 1.1rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .version-banner .btn-dismiss:hover {
+            color: white;
+        }
+
         /* Filters */
         .filters {
             display: flex;
@@ -798,6 +865,48 @@
             font-size: 0.75rem;
             color: var(--accent-blue);
             animation: processingPulse 2s ease-in-out infinite;
+        }
+        
+        /* Pulsing border effect on processing task cards */
+        .task-card.processing-active {
+            border-color: var(--accent-blue) !important;
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            animation: processingBorderPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes processingBorderPulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+            }
+        }
+        
+        /* Timeout warning (30+ minutes) */
+        .task-processing.timeout-warning {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.15));
+            color: var(--accent-yellow);
+        }
+        
+        .task-card.processing-timeout {
+            border-color: var(--accent-red) !important;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            animation: timeoutBorderPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes timeoutBorderPulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+            }
+        }
+        
+        .processing-time {
+            font-size: 0.7rem;
+            opacity: 0.8;
         }
         
         @keyframes processingPulse {
@@ -2102,6 +2211,18 @@
         </div>
     </header>
 
+    <!-- Version Update Banner -->
+    <div class="version-banner" id="version-banner">
+        <div class="version-banner-text">
+            <span class="update-icon">🔄</span>
+            Neue Version verfügbar!
+        </div>
+        <div>
+            <button class="btn-refresh" onclick="reloadPage()">↻ Aktualisieren</button>
+            <button class="btn-dismiss" onclick="dismissVersionBanner()">✕</button>
+        </div>
+    </div>
+
     <!-- Unsaved Changes Banner -->
     <div class="unsaved-banner" id="unsaved-banner">
         <span class="unsaved-text">⚠️ You have unsaved changes</span>
@@ -2649,6 +2770,12 @@
             isLoading: false,
             gatewayUrl: null  // Set via config or auto-detected
         };
+
+        // === VERSION CHECK ===
+        const VERSION_FILE = 'data/version.json';
+        const VERSION_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
+        let currentVersion = null;
+        let versionCheckInterval = null;
         
         // Gateway URL detection
         function getGatewayUrl() {
@@ -3521,16 +3648,45 @@
             ` : '';
             
             // Processing spinner (shown when agent is working on this task)
-            const isProcessing = task.processingStartedAt && task.status === 'in_progress';
-            const processingIndicator = isProcessing ? `
-                <div class="task-processing" title="MoltBot is working on this task...">
-                    <div class="processing-spinner"></div>
-                    <span>Processing...</span>
-                </div>
-            ` : '';
+            const isProcessing = (task.processingStartedAt || task.processing) && task.status === 'in_progress';
+            let processingIndicator = '';
+            let processingCardClass = '';
+            
+            if (isProcessing) {
+                const startTime = new Date(task.processingStartedAt || Date.now());
+                const now = new Date();
+                const minutesElapsed = Math.floor((now - startTime) / 60000);
+                const isTimeout = minutesElapsed >= 30;
+                
+                // Format time display
+                let timeDisplay = '';
+                if (minutesElapsed < 1) {
+                    timeDisplay = 'just started';
+                } else if (minutesElapsed < 60) {
+                    timeDisplay = `${minutesElapsed} min`;
+                } else {
+                    const hours = Math.floor(minutesElapsed / 60);
+                    const mins = minutesElapsed % 60;
+                    timeDisplay = `${hours}h ${mins}m`;
+                }
+                
+                // Set card class for border effect
+                processingCardClass = isTimeout ? 'processing-timeout' : 'processing-active';
+                
+                // Different text for cron execution tasks
+                const spinnerText = task.isCronExecution ? 'Executing...' : 'Processing...';
+                
+                processingIndicator = `
+                    <div class="task-processing${isTimeout ? ' timeout-warning' : ''}" title="${isTimeout ? '⚠️ Processing for over 30 minutes!' : 'MoltBot is working on this task...'}">
+                        <div class="processing-spinner"></div>
+                        <span>${spinnerText}</span>
+                        <span class="processing-time">(${timeDisplay})</span>
+                    </div>
+                `;
+            }
 
             return `
-                <div class="task-card priority-${task.priority}${isArchived ? ' archived' : ''}" data-task-id="${task.id}"
+                <div class="task-card priority-${task.priority}${isArchived ? ' archived' : ''}${processingCardClass ? ' ' + processingCardClass : ''}" data-task-id="${task.id}"
                      draggable="${!isArchived}"
                      ondragstart="handleDragStart(event, '${task.id}')"
                      ondragend="handleDragEnd(event)"
@@ -5517,6 +5673,18 @@
         setInterval(() => {
             if (STATE.data) renderScheduledTasks();
         }, 30000);
+        
+        // Update processing task timers every 30 seconds (for elapsed time display)
+        setInterval(() => {
+            if (STATE.data) {
+                const processingTasks = STATE.data.tasks.filter(t => 
+                    (t.processingStartedAt || t.processing) && t.status === 'in_progress'
+                );
+                if (processingTasks.length > 0) {
+                    renderTasks();
+                }
+            }
+        }, 30000);
 
         // === TASK 1: CRON DRAG & DROP ===
         let draggedCronId = null;
@@ -6622,6 +6790,77 @@
         
         // Start auto-refresh after page loads
         setTimeout(startCronAutoRefresh, 10000); // Start 10s after load
+
+        // === VERSION CHECK FUNCTIONS ===
+        async function checkForUpdates() {
+            try {
+                // Add cache-busting to force fresh fetch
+                const response = await fetch(`${VERSION_FILE}?t=${Date.now()}`, {
+                    cache: 'no-store'
+                });
+                
+                if (!response.ok) return;
+                
+                const versionData = await response.json();
+                
+                // First load - store current version
+                if (currentVersion === null) {
+                    currentVersion = versionData.buildHash;
+                    console.log('[Version] Current build:', currentVersion);
+                    return;
+                }
+                
+                // Check if version changed
+                if (versionData.buildHash !== currentVersion) {
+                    console.log('[Version] New version detected:', versionData.buildHash);
+                    showVersionBanner();
+                }
+            } catch (error) {
+                console.log('[Version] Check failed:', error.message);
+            }
+        }
+
+        function showVersionBanner() {
+            const banner = document.getElementById('version-banner');
+            if (banner) {
+                banner.classList.add('visible');
+            }
+        }
+
+        function dismissVersionBanner() {
+            const banner = document.getElementById('version-banner');
+            if (banner) {
+                banner.classList.remove('visible');
+            }
+            // Stop checking for this session (user dismissed)
+            if (versionCheckInterval) {
+                clearInterval(versionCheckInterval);
+                versionCheckInterval = null;
+            }
+        }
+
+        function reloadPage() {
+            // Force hard reload to get new version
+            window.location.reload(true);
+        }
+
+        function startVersionCheck() {
+            // Initial check
+            checkForUpdates();
+            
+            // Periodic check
+            versionCheckInterval = setInterval(checkForUpdates, VERSION_CHECK_INTERVAL);
+            
+            // Also check when tab becomes visible again
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    checkForUpdates();
+                }
+            });
+        }
+
+        // Start version check after page loads
+        setTimeout(startVersionCheck, 5000);
 
         // Warn before leaving with unsaved changes
         window.addEventListener('beforeunload', (e) => {

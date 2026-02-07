@@ -185,6 +185,30 @@ See `docs/TROUBLESHOOTING.md` for common issues:
 
 ---
 
+## Security
+
+Mission Control is a task management system **for** AI agents — its core purpose is to pass human-authored task descriptions to an agent for execution. This is by design, not a vulnerability.
+
+### Trust Model
+
+- **Single-user / trusted-user setup:** Task authors are the same people who control the agent. The trust boundary is identical to typing a message directly to your assistant.
+- **Multi-user setups:** If multiple users can create tasks on the dashboard, treat task content as untrusted input. Use Clawdbot's agent sandbox and permission model to limit what the agent can do.
+
+### Mitigations
+
+- **Input sanitization:** `mc-update.sh` validates all inputs against injection patterns before passing them to Python or git.
+- **No credential storage:** The dashboard stores no tokens or secrets — all auth is handled by Clawdbot's config.
+- **Webhook HMAC verification:** The transform module validates webhook signatures using `timingSafeEqual` to prevent tampering.
+- **Security scan on sync:** The `sync-to-opensource.sh` script scans for leaked credentials before publishing.
+
+### Recommendations
+
+- Keep your dashboard repository **private** if you don't want others to see your task data.
+- Review task descriptions before moving them to "In Progress" if the task was created by someone else.
+- Use Clawdbot's `groupPolicy` and `allowFrom` settings to restrict who can interact with the agent.
+
+---
+
 ## Files
 
 | File | Purpose |

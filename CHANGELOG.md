@@ -5,6 +5,60 @@ All notable changes to Mission Control will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-01-31
+
+### Security
+
+- **Input sanitization in `mc-update.sh`** — Rejects arguments containing backticks or `$` to prevent shell/string injection
+- **Credential scanning** — Pre-sync checks before open-source publishing
+- **No tokens or secrets** stored in the dashboard
+
+---
+
+## [2.2.0] - 2026-01-30
+
+### Added
+
+- **Version Update Banner** — Dashboard now shows a notification banner when a new version is available
+  - Checks `data/version.json` every 5 minutes
+  - Also checks when tab becomes visible again
+  - Stylish gradient banner with refresh button
+  - Dismissable (stops checking for current session)
+- **`scripts/update-version.sh`** — Helper script to update version.json with current git hash
+- **`data/version.json`** — Version tracking file with buildHash and buildTime
+
+### Technical
+
+- CSS styles for `.version-banner` with pulse animation
+- `checkForUpdates()`, `showVersionBanner()`, `dismissVersionBanner()` JavaScript functions
+- Cache-busting on version check requests
+- Version check also triggers on `visibilitychange` event
+
+---
+
+## [2.1.0] - 2026-01-30
+
+### Added
+
+- **Recurring Column** — New "Recurring" column (leftmost) displays automated cronjobs from Clawdbot Gateway
+- **Cron Cards** — Visual representation of cronjobs with:
+  - Status indicator (🟢 active / ⚪ disabled / 🔴 error)
+  - Human-readable schedule ("Täglich um 08:00", "Montags 08:00")
+  - Last run and next run timestamps (relative time)
+- **`data/crons.json`** — JSON data source for recurring jobs
+- **`scripts/sync-to-opensource.sh`** — Exports sanitized crons for open source distribution
+- **Processing Timer** — Shows elapsed time on processing tasks with 30-minute timeout warning
+- **Processing Border Pulse** — Visual pulsing effect on cards being processed
+
+### Technical
+
+- CSS styles for `.cron-card`, `.cron-status`, `.recurring-column`
+- `loadCrons()` and `renderCrons()` JavaScript functions
+- `formatCronExpression()` converts cron syntax to German-readable text
+- Enhanced `renderTaskCard()` with time display and timeout detection
+
+---
+
 ## [2.0.0] - 2026-01-30
 
 ### ⚠️ Breaking Changes

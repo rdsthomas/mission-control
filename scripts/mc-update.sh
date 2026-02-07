@@ -14,9 +14,21 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-TASKS_FILE="$REPO_DIR/data/tasks.json"
+export TASKS_FILE="$REPO_DIR/data/tasks.json"
 
 cd "$REPO_DIR"
+
+# Sanitize input: reject arguments containing characters that could break
+# Python string literals or shell commands.
+sanitize_input() {
+    local val="$1"
+    local name="$2"
+    # Block backticks and $ to prevent shell/string injection
+    if [[ "$val" =~ [\`\$] ]]; then
+        echo "✗ Invalid characters in $name" >&2
+        exit 1
+    fi
+}
 
 case "$1" in
     status)
@@ -28,24 +40,30 @@ case "$1" in
             exit 1
         fi
         
-        python3 << PYEOF
-import json
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+        sanitize_input "$TASK_ID" "task_id"
+        sanitize_input "$NEW_STATUS" "status"
+        
+        MC_TASK_ID="$TASK_ID" MC_NEW_STATUS="$NEW_STATUS" python3 -c "
+import json, sys, os
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+new_status = os.environ['MC_NEW_STATUS']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
+    if t['id'] == task_id:
         old_status = t['status']
-        t['status'] = '$NEW_STATUS'
+        t['status'] = new_status
         found = True
-        print(f"✓ {t['title']}: {old_status} → $NEW_STATUS")
+        print(f'✓ {t[\"title\"]}: {old_status} → {new_status}')
         break
 if not found:
-    print(f"✗ Task '$TASK_ID' not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print(f'✗ Task \"{task_id}\" not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< "" 
         ;;
         
     subtask)
@@ -58,26 +76,32 @@ PYEOF
             exit 1
         fi
         
-        python3 << PYEOF
-import json
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+        sanitize_input "$TASK_ID" "task_id"
+        sanitize_input "$SUBTASK_ID" "subtask_id"
+        
+        MC_TASK_ID="$TASK_ID" MC_SUBTASK_ID="$SUBTASK_ID" python3 -c "
+import json, sys, os
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+subtask_id = os.environ['MC_SUBTASK_ID']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
+    if t['id'] == task_id:
         for s in t['subtasks']:
-            if s['id'] == '$SUBTASK_ID':
+            if s['id'] == subtask_id:
                 s['done'] = True
                 found = True
-                print(f"✓ Subtask '{s['title']}' marked as done")
+                print(f'✓ Subtask \"{s[\"title\"]}\" marked as done')
                 break
         break
 if not found:
-    print(f"✗ Task or subtask not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print('✗ Task or subtask not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< ""
         ;;
         
     comment)
@@ -89,32 +113,37 @@ PYEOF
             exit 1
         fi
         
-        python3 << PYEOF
-import json
+        sanitize_input "$TASK_ID" "task_id"
+        
+        MC_TASK_ID="$TASK_ID" MC_COMMENT_TEXT="$COMMENT_TEXT" python3 -c "
+import json, sys, os
 from datetime import datetime
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+comment_text = os.environ['MC_COMMENT_TEXT']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
+    if t['id'] == task_id:
         if 'comments' not in t:
             t['comments'] = []
         comment = {
-            'id': f"c{len(t['comments'])+1}",
+            'id': f'c{len(t[\"comments\"])+1}',
             'author': 'MoltBot',
-            'text': '''$COMMENT_TEXT''',
+            'text': comment_text,
             'createdAt': datetime.now().isoformat() + 'Z'
         }
         t['comments'].append(comment)
         found = True
-        print(f"✓ Comment added to '{t['title']}'")
+        print(f'✓ Comment added to \"{t[\"title\"]}\"')
         break
 if not found:
-    print(f"✗ Task '$TASK_ID' not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print(f'✗ Task \"{task_id}\" not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< ""
         ;;
         
     add-subtask)
@@ -126,28 +155,33 @@ PYEOF
             exit 1
         fi
         
-        python3 << PYEOF
-import json
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+        sanitize_input "$TASK_ID" "task_id"
+        
+        MC_TASK_ID="$TASK_ID" MC_SUBTASK_TITLE="$SUBTASK_TITLE" python3 -c "
+import json, sys, os
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+subtask_title = os.environ['MC_SUBTASK_TITLE']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
-        subtask_id = f"sub_{len(t['subtasks'])+1}"
+    if t['id'] == task_id:
+        subtask_id = f'sub_{len(t[\"subtasks\"])+1}'
         t['subtasks'].append({
             'id': subtask_id,
-            'title': '''$SUBTASK_TITLE''',
+            'title': subtask_title,
             'done': False
         })
         found = True
-        print(f"✓ Subtask '{subtask_id}' added to '{t['title']}'")
+        print(f'✓ Subtask \"{subtask_id}\" added to \"{t[\"title\"]}\"')
         break
 if not found:
-    print(f"✗ Task '$TASK_ID' not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print(f'✗ Task \"{task_id}\" not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< ""
         ;;
         
     complete)
@@ -159,14 +193,19 @@ PYEOF
             exit 1
         fi
         
-        python3 << PYEOF
-import json
+        sanitize_input "$TASK_ID" "task_id"
+        
+        MC_TASK_ID="$TASK_ID" MC_SUMMARY="$SUMMARY" python3 -c "
+import json, sys, os
 from datetime import datetime
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+summary = os.environ['MC_SUMMARY']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
+    if t['id'] == task_id:
         old_status = t['status']
         t['status'] = 'review'
         # Clear processing flag (stops spinner)
@@ -175,22 +214,22 @@ for t in data['tasks']:
         if 'comments' not in t:
             t['comments'] = []
         comment = {
-            'id': f"c{len(t['comments'])+1}",
+            'id': f'c{len(t[\"comments\"])+1}',
             'author': 'MoltBot',
-            'text': '''$SUMMARY''',
+            'text': summary,
             'createdAt': datetime.now().isoformat() + 'Z'
         }
         t['comments'].append(comment)
         found = True
-        print(f"✓ {t['title']}: {old_status} → review")
-        print(f"✓ Added completion comment")
+        print(f'✓ {t[\"title\"]}: {old_status} → review')
+        print('✓ Added completion comment')
         break
 if not found:
-    print(f"✗ Task '$TASK_ID' not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print(f'✗ Task \"{task_id}\" not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< ""
         ;;
         
     start)
@@ -201,18 +240,22 @@ PYEOF
             exit 1
         fi
         
-        python3 << PYEOF
-import json
+        sanitize_input "$TASK_ID" "task_id"
+        
+        MC_TASK_ID="$TASK_ID" python3 -c "
+import json, sys, os
 from datetime import datetime
-with open('$TASKS_FILE', 'r', encoding='utf-8') as f:
+tasks_file = os.environ['TASKS_FILE']
+task_id = os.environ['MC_TASK_ID']
+with open(tasks_file, 'r', encoding='utf-8') as f:
     data = json.load(f)
 found = False
 for t in data['tasks']:
-    if t['id'] == '$TASK_ID':
+    if t['id'] == task_id:
         # Check if already being processed
         if t.get('processingStartedAt'):
-            print(f"⚠ Task '{t['title']}' is already being processed since {t['processingStartedAt']}")
-            exit(1)
+            print(f'⚠ Task \"{t[\"title\"]}\" is already being processed since {t[\"processingStartedAt\"]}')
+            sys.exit(1)
         
         # Set processing timestamp
         now = datetime.now().isoformat() + 'Z'
@@ -222,7 +265,7 @@ for t in data['tasks']:
         if 'comments' not in t:
             t['comments'] = []
         comment = {
-            'id': f"c_{int(datetime.now().timestamp()*1000)}",
+            'id': f'c_{int(datetime.now().timestamp()*1000)}',
             'author': 'MoltBot',
             'text': '🤖 Processing started',
             'createdAt': now
@@ -230,15 +273,15 @@ for t in data['tasks']:
         t['comments'].append(comment)
         
         found = True
-        print(f"✓ Processing started for '{t['title']}'")
-        print(f"✓ processingStartedAt: {now}")
+        print(f'✓ Processing started for \"{t[\"title\"]}\"')
+        print(f'✓ processingStartedAt: {now}')
         break
 if not found:
-    print(f"✗ Task '$TASK_ID' not found")
-    exit(1)
-with open('$TASKS_FILE', 'w', encoding='utf-8') as f:
+    print(f'✗ Task \"{task_id}\" not found')
+    sys.exit(1)
+with open(tasks_file, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
-PYEOF
+" <<< ""
         ;;
         
     *)
@@ -260,7 +303,7 @@ esac
 # Auto commit and push if changes were made
 if [[ -n "$(git status --porcelain data/tasks.json)" ]]; then
     git add data/tasks.json
-    git commit -m "Task update via mc-update.sh: $1 $2"
+    git commit -m "Task update via mc-update.sh: ${1} ${2}"
     git push
     echo "✓ Changes pushed to GitHub"
 fi
