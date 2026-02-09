@@ -786,6 +786,19 @@
           "done": false
         }
       ]
+    },
+    {
+      "id": "task_1770628896975",
+      "title": "Das ist ein Test",
+      "description": "Sende mir eine Nachricht über Telegram. Inhaltlich soll es ein lustiger Witz sein über das bekannte deutsche Fritzchen.",
+      "project": "docs",
+      "tags": [
+        "docs"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-09T09:21:36.975Z",
+      "status": "backlog"
     }
   ],
   "projects": [
@@ -851,7 +864,7 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-02T23:30:28.533Z",
+  "lastUpdated": "2026-02-09T09:21:36.975Z",
   "activities": [
     {
       "type": "archive",
