@@ -729,7 +729,7 @@
       "subtasks": [],
       "priority": "medium",
       "createdAt": "2026-02-09T09:21:36.975Z",
-      "status": "in_progress",
+      "status": "backlog",
       "sortOrder": 0
     }
   ],
@@ -796,8 +796,16 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-09T09:27:29.157Z",
+  "lastUpdated": "2026-02-09T09:35:42.802Z",
   "activities": [
+    {
+      "type": "moved",
+      "actor": "michsindlinger",
+      "task": "Das ist ein Test",
+      "from": "in_progress",
+      "to": "backlog",
+      "time": "just now"
+    },
     {
       "type": "moved",
       "actor": "michsindlinger",
