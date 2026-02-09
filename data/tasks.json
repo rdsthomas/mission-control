@@ -719,39 +719,6 @@
       ]
     },
     {
-      "id": "scheduled_quarterly_review",
-      "title": "📅 Q1 Quarterly Business Review",
-      "description": "Prepare presentation for Q1 QBR meeting.\n\n**Topics:**\n- Revenue & growth metrics\n- Product roadmap progress\n- Team updates\n- Q2 priorities",
-      "status": "in_progress",
-      "priority": "high",
-      "project": "product",
-      "tags": [
-        "scheduled",
-        "meeting",
-        "quarterly"
-      ],
-      "createdAt": "2026-01-15T00:00:00.000Z",
-      "updatedAt": "2026-01-15T00:00:00.000Z",
-      "subtasks": [
-        {
-          "id": "sub1",
-          "title": "Gather metrics from analytics",
-          "done": false
-        },
-        {
-          "id": "sub2",
-          "title": "Create slide deck",
-          "done": false
-        },
-        {
-          "id": "sub3",
-          "title": "Review with leadership",
-          "done": false
-        }
-      ],
-      "sortOrder": 0
-    },
-    {
       "id": "scheduled_dependency_update",
       "title": "🔄 Monthly Dependency Updates",
       "description": "Update all npm and pip dependencies.\n\n**Process:**\n1. Run `npm outdated` / `pip list --outdated`\n2. Review changelogs\n3. Update and test\n4. Create PR",
@@ -867,7 +834,7 @@
     }
   ],
   "version": 2,
-  "lastUpdated": "2026-02-09T09:21:55.934Z",
+  "lastUpdated": "2026-02-09T09:27:25.887Z",
   "activities": [
     {
       "type": "moved",
