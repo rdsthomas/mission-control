@@ -20,6 +20,10 @@ IDENTITY.md
 # === MEMORY DIRECTORY (personal data) ===
 memory/
 
+# === USER DATA (tasks, crons — never commit personal data) ===
+data/tasks.json
+data/crons.json
+
 # === LOGS ===
 *.log
 
