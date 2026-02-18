@@ -814,19 +814,28 @@
             <div class="modal-body">
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">Gateway Connection</h3>
                 <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Connect to your Clawdbot Gateway for Run History and real-time sync.</p>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" class="form-input" id="gateway-url-input" placeholder="http://localhost:3033" style="flex: 1;">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Connect to your OpenClaw Gateway for Run History and real-time sync.</p>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="text" class="form-input" id="gateway-url-input" placeholder="http://localhost:18789" style="flex: 1;">
                         <button class="btn btn-primary" onclick="saveGatewayUrl()">Connect</button>
                     </div>
                     <div id="gateway-status" style="font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary);"></div>
+                    <div style="margin-top: 10px;">
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Gateway Token (from gateway.auth.token in openclaw.json)</p>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="password" class="form-input" id="gateway-token-input" placeholder="Gateway Auth Token" style="flex: 1;">
+                            <button class="btn btn-secondary" onclick="toggleGatewayTokenVisibility()" title="Show/Hide">👁️</button>
+                            <button class="btn btn-primary" onclick="saveGatewayToken()">Save</button>
+                        </div>
+                        <div id="gateway-token-status" style="font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary);"></div>
+                    </div>
                 </div>
                 
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">💭 Live Thinking</h3>
                 <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Enable real-time thinking visibility during task processing. Requires Clawdbot Hooks Token.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Enable real-time thinking visibility during task processing. Requires Gateway Hooks Token.</p>
                     <div style="display: flex; gap: 8px;">
-                        <input type="password" class="form-input" id="hooks-token-input" placeholder="Hooks Token (from clawdbot.json)" style="flex: 1;">
+                        <input type="password" class="form-input" id="hooks-token-input" placeholder="Hooks Token (from openclaw.json)" style="flex: 1;">
                         <button class="btn btn-secondary" onclick="toggleHooksTokenVisibility()" title="Show/Hide">👁️</button>
                         <button class="btn btn-primary" onclick="saveHooksToken()">Save</button>
                     </div>
@@ -1035,7 +1044,7 @@
             hasUnsavedChanges: false,
             isLoading: false,
             gatewayUrl: null,  // Set via config or auto-detected
-            sessionKey: null,  // Clawdbot session key for thinking visibility
+            sessionKey: null,  // Session key for thinking visibility
             skills: [],  // Skills list for skill column
             crons: [],   // Crons list for recurring column
             searchQuery: '',  // Current search filter
@@ -1046,6 +1055,7 @@
         
         // Gateway URL detection
         const KNOWN_GATEWAY_URLS = [
+            'http://localhost:18789',
             'http://localhost:3033',
             'https://your-gateway.example.com'
         ];
@@ -1077,7 +1087,7 @@
             const isLocal = location.hostname === 'localhost' || 
                            location.hostname === '127.0.0.1' ||
                            location.protocol === 'file:';
-            if (isLocal) return 'http://localhost:3033';
+            if (isLocal) return 'http://localhost:18789';
             
             // 5. Return null - will trigger auto-probe
             return null;
@@ -1092,6 +1102,83 @@
             }
         }
         
+        // === GATEWAY ADAPTER (OpenClaw /tools/invoke) ===
+        
+        /**
+         * Invoke an OpenClaw tool via /tools/invoke.
+         * @param {string} tool - Tool name (e.g. 'cron')
+         * @param {object} args - Tool arguments
+         * @param {object} [opts] - { gatewayUrl, token, timeout }
+         * @returns {Promise<object>} - result from data.result
+         * @throws on network/HTTP/invoke errors
+         */
+        async function gatewayInvoke(tool, args, opts = {}) {
+            const url = opts.gatewayUrl || getGatewayUrl();
+            if (!url) throw new Error('No gateway URL configured');
+            
+            const token = opts.token !== undefined ? opts.token 
+                : (localStorage.getItem(`gateway_token_${btoa(url)}`) || '');
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            
+            const controller = new AbortController();
+            const timeoutMs = opts.timeout || 30000;
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            
+            let response;
+            try {
+                response = await fetch(`${url}/tools/invoke`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ tool, args }),
+                    signal: controller.signal
+                });
+            } finally {
+                clearTimeout(timeoutId);
+            }
+            
+            if (!response.ok) {
+                const text = await response.text().catch(() => '');
+                const err = new Error(`Gateway error ${response.status}: ${text.substring(0, 200)}`);
+                err.status = response.status;
+                throw err;
+            }
+            
+            const data = await response.json();
+            if (!data.ok) throw new Error(data.error || 'Gateway invoke failed');
+            return data.result;
+        }
+        
+        /**
+         * Probe whether a gateway URL is reachable.
+         * Returns true if the gateway responds (even with 401).
+         */
+        async function probeGateway(url) {
+            try {
+                const token = localStorage.getItem(`gateway_token_${btoa(url)}`) || '';
+                await gatewayInvoke('cron', { action: 'list' }, { gatewayUrl: url, token, timeout: 3000 });
+                return true;
+            } catch (e) {
+                // 401 = gateway is alive but needs auth
+                if (e.status === 401) return true;
+                return false;
+            }
+        }
+        
+        // Extract structured data from tools/invoke response
+        function extractInvokeData(result) {
+            // Prefer details (structured) over content[0].text (JSON string)
+            if (result.details) return result.details;
+            if (result.content && result.content[0] && result.content[0].text) {
+                try { return JSON.parse(result.content[0].text); } catch(e) {}
+            }
+            return result;
+        }
+        
         // Auto-probe known Gateway URLs
         async function autoProbeGateway() {
             if (STATE.gatewayUrl || localStorage.getItem('mc_gateway_url')) {
@@ -1102,17 +1189,8 @@
             
             for (const url of KNOWN_GATEWAY_URLS) {
                 try {
-                    const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 2000);
-                    
-                    const response = await fetch(`${url}/api/status`, {
-                        method: 'GET',
-                        signal: controller.signal
-                    });
-                    
-                    clearTimeout(timeout);
-                    
-                    if (response.ok) {
+                    const found = await probeGateway(url);
+                    if (found) {
                         console.log(`✓ Gateway found at ${url}`);
                         setGatewayUrl(url);
                         return url;
@@ -1677,6 +1755,47 @@
             }
         }
 
+        // Load crons from OpenClaw Gateway (primary source when available)
+        async function loadCronsFromGateway() {
+            const gatewayUrl = getGatewayUrl();
+            if (!gatewayUrl) return false;
+            
+            try {
+                const result = await gatewayInvoke('cron', { action: 'list', includeDisabled: true });
+                const data = extractInvokeData(result);
+                const jobs = data.jobs || [];
+                
+                // Map gateway format → dashboard format
+                STATE.crons = jobs.map(job => ({
+                    id: job.id,
+                    name: job.name || '(unnamed)',
+                    prompt: job.payload?.text || '',
+                    schedule: job.schedule?.expr || job.schedule?.everyMs || '',
+                    scheduleKind: job.schedule?.kind || 'cron',
+                    scheduleHuman: cronToHuman(job.schedule?.expr || ''),
+                    timezone: job.schedule?.tz || 'UTC',
+                    enabled: job.enabled !== false,
+                    sessionTarget: job.sessionTarget || 'main',
+                    payload: job.payload,
+                    tags: job.tags || [],
+                    project: job.project || '',
+                    lastRunAt: job.state?.lastRunAtMs ? new Date(job.state.lastRunAtMs).toISOString() : null,
+                    nextRunAt: job.state?.nextRunAtMs ? new Date(job.state.nextRunAtMs).toISOString() : null,
+                    lastStatus: job.state?.lastStatus || null,
+                    lastDurationMs: job.state?.lastDurationMs || 0,
+                    consecutiveErrors: job.state?.consecutiveErrors || 0,
+                    _source: 'gateway'
+                }));
+                
+                console.log(`✓ Loaded ${STATE.crons.length} crons from Gateway`);
+                renderCrons();
+                return true;
+            } catch (e) {
+                console.log('Failed to load crons from Gateway:', e.message);
+                return false;
+            }
+        }
+        
         function renderCrons() {
             const container = document.getElementById('tasks-recurring');
             const countEl = document.getElementById('count-recurring');
@@ -3289,12 +3408,12 @@
                 const relativeTime = getRelativeTime(date);
                 const author = commit.commit.author.name;
                 const message = commit.commit.message.split('\n')[0];
-                const isClawdbot = author.toLowerCase().includes('clawdbot') || author.toLowerCase().includes('jeannie');
+                const isBot = author.toLowerCase().includes('bot') || author.toLowerCase().includes('openclaw');
                 
                 return `
                     <div class="brain-changelog-item" onclick="openDiffModal('${commit.sha}')" title="Click to view changes">
                         <div class="brain-changelog-item-header">
-                            <span class="brain-changelog-author">${isClawdbot ? '🤖' : '👤'} ${escapeHtml(author)}</span>
+                            <span class="brain-changelog-author">${isBot ? '🤖' : '👤'} ${escapeHtml(author)}</span>
                             <span class="brain-changelog-time">${relativeTime}</span>
                         </div>
                         <div class="brain-changelog-message">${escapeHtml(message)}</div>
@@ -4238,7 +4357,7 @@ Output the consolidated content in clean Markdown format:`;
                     hideAuthModal();
                     updateAuthUI();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                     await loadSkillsFromGitHub();
                 }, 1000);
 
@@ -6453,6 +6572,17 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 sessionStatus.textContent = currentSession ? '✅ Configured' : '⚠️ Not set';
                 sessionStatus.style.color = currentSession ? 'var(--accent-green)' : 'var(--text-secondary)';
             }
+            // Show current gateway token
+            const gwTokenInput = document.getElementById('gateway-token-input');
+            const gwTokenStatus = document.getElementById('gateway-token-status');
+            const currentGwToken = currentUrl ? (localStorage.getItem(`gateway_token_${btoa(currentUrl)}`) || '') : '';
+            if (gwTokenInput) {
+                gwTokenInput.value = currentGwToken;
+            }
+            if (gwTokenStatus) {
+                gwTokenStatus.textContent = currentGwToken ? '✅ Token configured' : '⚠️ Not set (cron operations will fail)';
+                gwTokenStatus.style.color = currentGwToken ? 'var(--accent-green)' : 'var(--accent-yellow)';
+            }
             // Show current hooks token
             const hooksInput = document.getElementById('hooks-token-input');
             const hooksStatus = document.getElementById('hooks-token-status');
@@ -6487,11 +6617,8 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             status.style.color = 'var(--text-secondary)';
             
             try {
-                const response = await fetch(url + '/api/health', { 
-                    method: 'GET',
-                    timeout: 5000 
-                });
-                if (response.ok) {
+                const found = await probeGateway(url);
+                if (found) {
                     setGatewayUrl(url);
                     status.textContent = '✅ Connected!';
                     status.style.color = 'var(--accent-green)';
@@ -6501,12 +6628,43 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     status.style.color = 'var(--accent-red)';
                 }
             } catch (err) {
-                // Try anyway - might just not have /health endpoint
+                // Try anyway - might just not have a responding endpoint
                 setGatewayUrl(url);
                 status.textContent = '⚠️ Saved (could not verify)';
                 status.style.color = 'var(--accent-yellow)';
                 showToast('info', 'Gateway URL saved');
             }
+        }
+        
+        // === GATEWAY AUTH TOKEN ===
+        function toggleGatewayTokenVisibility() {
+            const input = document.getElementById('gateway-token-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+        
+        function saveGatewayToken() {
+            const input = document.getElementById('gateway-token-input');
+            const status = document.getElementById('gateway-token-status');
+            const token = input.value.trim();
+            const url = getGatewayUrl();
+            
+            if (!token) {
+                if (url) localStorage.removeItem(`gateway_token_${btoa(url)}`);
+                status.textContent = '⚠️ Token removed';
+                status.style.color = 'var(--accent-yellow)';
+                return;
+            }
+            
+            if (!url) {
+                status.textContent = '❌ Set Gateway URL first';
+                status.style.color = 'var(--accent-red)';
+                return;
+            }
+            
+            localStorage.setItem(`gateway_token_${btoa(url)}`, token);
+            status.textContent = '✅ Token saved';
+            status.style.color = 'var(--accent-green)';
+            showToast('success', 'Gateway token saved');
         }
         
         // === HOOKS TOKEN FOR LIVE THINKING ===
@@ -6611,7 +6769,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             }
         }
         
-        // Fetch REAL thinking blocks from Clawdbot Gateway API
+        // Fetch REAL thinking blocks from Gateway API
         async function fetchThinkingBlocks(taskId) {
             const token = getHooksToken();
             
@@ -7928,20 +8086,11 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             showToast('info', `🚀 Executing "${cron.name}"...`);
             
             try {
-                // Call Gateway API to execute cron
-                const response = await fetch(gatewayUrl + '/api/crons/' + cronId + '/run', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    showToast('success', `✓ Cron "${cron.name}" started`);
-                    // Start polling for status
-                    pollCronStatus(cronId);
-                } else {
-                    showToast('error', `Failed to execute cron`);
-                    removeCronExecutionTask(cronId);
-                }
+                // Call Gateway via /tools/invoke to execute cron
+                await gatewayInvoke('cron', { action: 'run', jobId: cronId });
+                showToast('success', `✓ Cron "${cron.name}" started`);
+                // Start polling for status
+                pollCronStatus(cronId);
             } catch (e) {
                 // Gateway not reachable - queue for later
                 cron.pendingExecution = true;
@@ -7971,7 +8120,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             
             cronPollingIntervals[cronId] = setInterval(async () => {
                 try {
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                     const cron = STATE.crons?.find(c => c.id === cronId);
                     
                     if (cron && cron.lastStatus === 'ok') {
@@ -8002,27 +8151,18 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             
             const gatewayUrl = getGatewayUrl();
             if (!gatewayUrl) {
-                showToast('info', `Run: clawdbot cron update ${cronId} --disabled`, 8000);
-                navigator.clipboard?.writeText(`clawdbot cron update ${cronId} --disabled`);
+                showToast('info', `Run: openclaw cron update ${cronId} --disabled`, 8000);
+                navigator.clipboard?.writeText(`openclaw cron update ${cronId} --disabled`);
                 return;
             }
             
             try {
-                const response = await fetch(gatewayUrl + '/api/crons/' + cronId, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ enabled: false })
-                });
-                
-                if (response.ok) {
-                    cron.enabled = false;
-                    renderCrons();
-                    showToast('success', `Disabled cron "${cron.name}"`);
-                } else {
-                    showToast('error', 'Failed to disable cron');
-                }
+                await gatewayInvoke('cron', { action: 'update', jobId: cronId, patch: { enabled: false } });
+                cron.enabled = false;
+                renderCrons();
+                showToast('success', `Disabled cron "${cron.name}"`);
             } catch (e) {
-                showToast('info', `Run: clawdbot cron update ${cronId} --disabled`, 8000);
+                showToast('info', `Run: openclaw cron update ${cronId} --disabled`, 8000);
             }
         }
 
@@ -8101,31 +8241,24 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             // Create one-shot cron via Gateway API
             if (gatewayUrl) {
                 try {
-                    // Create new one-shot cron
-                    const response = await fetch(gatewayUrl + '/api/crons', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
+                    // Create new one-shot cron via /tools/invoke
+                    const result = await gatewayInvoke('cron', { 
+                        action: 'add',
+                        job: {
                             name: cron.name + ' (one-time)',
-                            schedule: { kind: 'at', atMs: new Date(datetime).getTime() },
+                            schedule: { kind: 'at', at: new Date(datetime).toISOString() },
                             sessionTarget: cron.sessionTarget || 'main',
-                            wakeMode: cron.wakeMode || 'next-heartbeat',
                             payload: cron.payload,
-                            deleteAfterRun: true,
                             enabled: true
-                        })
+                        }
                     });
                     
-                    if (response.ok) {
-                        const newCronData = await response.json();
+                    {
+                        const newCronData = extractInvokeData(result);
                         
                         // Optionally disable original cron
                         if (action === 'disable') {
-                            await fetch(gatewayUrl + '/api/crons/' + cronId, {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ enabled: false })
-                            });
+                            await gatewayInvoke('cron', { action: 'update', jobId: cronId, patch: { enabled: false } });
                             cron.enabled = false;
                         }
                         
@@ -8151,8 +8284,6 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                         
                         closeCronToScheduledDialog();
                         showToast('success', `📅 Scheduled for ${new Date(scheduledAt).toLocaleString()}`);
-                    } else {
-                        showToast('error', 'Failed to create scheduled task');
                     }
                 } catch (e) {
                     console.error('Convert cron error:', e);
@@ -8448,25 +8579,11 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             
             if (gatewayUrl) {
                 try {
-                    const token = localStorage.getItem(`gateway_token_${btoa(gatewayUrl)}`);
-                    const response = await fetch(`${gatewayUrl}/api/cron/${cronId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        showToast('success', 'Cron job deleted');
-                        // Remove from local state
-                        STATE.crons = STATE.crons.filter(c => c.id !== cronId);
-                        closeCronEditor();
-                        renderCrons();
-                    } else {
-                        const error = await response.json().catch(() => ({}));
-                        showToast('error', error.error || 'Failed to delete cron job');
-                    }
+                    await gatewayInvoke('cron', { action: 'remove', jobId: cronId });
+                    showToast('success', 'Cron job deleted');
+                    STATE.crons = STATE.crons.filter(c => c.id !== cronId);
+                    closeCronEditor();
+                    renderCrons();
                 } catch (err) {
                     showToast('error', 'Failed to delete: ' + err.message);
                 }
@@ -8504,21 +8621,13 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     }
                 }
                 
-                // Second try: Gateway API (if configured)
+                // Second try: Gateway API via /tools/invoke (if configured)
                 const gatewayUrl = getGatewayUrl();
                 if (gatewayUrl && runs.length === 0) {
                     try {
-                        const token = localStorage.getItem(`gateway_token_${btoa(gatewayUrl)}`);
-                        const response = await fetch(`${gatewayUrl}/api/cron/${cronId}/runs`, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        if (response.ok) {
-                            const data = await response.json();
-                            runs = data.entries || [];
-                        }
+                        const result = await gatewayInvoke('cron', { action: 'runs', jobId: cronId });
+                        const data = extractInvokeData(result);
+                        runs = data.entries || [];
                     } catch (e) {
                         console.log('Gateway not available:', e);
                     }
@@ -8601,34 +8710,22 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             
             if (gatewayUrl) {
                 try {
-                    const token = localStorage.getItem(`gateway_token_${btoa(gatewayUrl)}`);
-                    const response = await fetch(`${gatewayUrl}/api/crons`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
+                    const result = await gatewayInvoke('cron', {
+                        action: 'add',
+                        job: {
                             name: newCron.name,
-                            prompt: newCron.prompt,
-                            schedule: newCron.schedule,
-                            timezone: newCron.timezone,
-                            enabled: newCron.enabled
-                        })
+                            schedule: newCron.schedule ? { kind: 'cron', expr: newCron.schedule, tz: newCron.timezone } : undefined,
+                            sessionTarget: newCron.sessionTarget || 'main',
+                            payload: newCron.payload,
+                            enabled: newCron.enabled !== false
+                        }
                     });
-                    
-                    if (response.ok) {
-                        const created = await response.json();
-                        STATE.crons.push(created.job || created);
-                        showToast('success', `Duplicated as "${newCron.name}"`);
-                        closeCronEditor();
-                        renderCrons();
-                        // Open the new cron for editing
-                        setTimeout(() => openCronEditor(created.job?.id || created.id), 300);
-                    } else {
-                        const error = await response.json().catch(() => ({}));
-                        showToast('error', error.error || 'Failed to duplicate cron job');
-                    }
+                    const created = extractInvokeData(result);
+                    STATE.crons.push(created.job || created);
+                    showToast('success', `Duplicated as "${newCron.name}"`);
+                    closeCronEditor();
+                    renderCrons();
+                    setTimeout(() => openCronEditor(created.job?.id || created.id), 300);
                 } catch (err) {
                     showToast('error', 'Failed to duplicate: ' + err.message);
                 }
@@ -8836,6 +8933,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             }
             
             const gatewayUrl = getGatewayUrl();
+            console.log('[saveCronChanges] gatewayUrl:', gatewayUrl, 'cronId:', cronId);
             if (!gatewayUrl) {
                 // Save locally and show CLI command
                 const cron = STATE.crons?.find(c => c.id === cronId);
@@ -8851,18 +8949,20 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 }
                 closeCronEditor();
                 renderCrons();
-                showToast('info', 'Gateway not available. Changes saved locally only.');
+                showToast('info', 'No Gateway URL configured. Changes saved locally only.');
                 return;
             }
             
             try {
-                const response = await fetch(gatewayUrl + '/api/crons/' + cronId, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, prompt, schedule, timezone, project, tags, enabled })
+                const token = localStorage.getItem(`gateway_token_${btoa(gatewayUrl)}`) || '';
+                console.log('[saveCronChanges] token present:', !!token, 'key:', `gateway_token_${btoa(gatewayUrl)}`);
+                await gatewayInvoke('cron', { 
+                    action: 'update', 
+                    jobId: cronId, 
+                    patch: { name, schedule: { kind: 'cron', expr: schedule, tz: timezone }, enabled } 
                 });
                 
-                if (response.ok) {
+                {
                     const cron = STATE.crons?.find(c => c.id === cronId);
                     if (cron) {
                         cron.name = name;
@@ -8877,11 +8977,10 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     closeCronEditor();
                     renderCrons();
                     showToast('success', `Cron "${name}" updated`);
-                } else {
-                    showToast('error', 'Failed to save cron');
                 }
             } catch (e) {
-                showToast('info', 'Gateway not available. Changes saved locally only.');
+                console.error('saveCronChanges error:', e);
+                showToast('error', 'Gateway error: ' + (e.message || 'unknown') + '. Changes saved locally only.');
                 const cron = STATE.crons?.find(c => c.id === cronId);
                 if (cron) {
                     cron.name = name;
@@ -9127,23 +9226,21 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             }
             
             try {
-                const response = await fetch(gatewayUrl + '/api/crons', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
+                const result = await gatewayInvoke('cron', {
+                    action: 'add',
+                    job: {
                         name: cronTitle,
-                        prompt: prompt,
-                        schedule: schedule,
-                        scheduleHuman: scheduleDesc,
-                        timezone: 'Europe/Berlin',
+                        schedule: { kind: 'cron', expr: schedule, tz: 'Europe/Berlin' },
+                        sessionTarget: 'main',
+                        payload: { kind: 'systemEvent', text: prompt },
                         enabled: true
-                    })
+                    }
                 });
                 
-                if (response.ok) {
-                    const newCron = await response.json();
+                {
+                    const newCron = extractInvokeData(result);
                     STATE.crons = STATE.crons || [];
-                    STATE.crons.push(newCron);
+                    STATE.crons.push(newCron.job || newCron);
                     
                     // Archive original task
                     task.archived = true;
@@ -9155,8 +9252,6 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     renderTasks();
                     debouncedAutoSave(`Convert task "${task.title}" to cron`);
                     showToast('success', `Created cron "${cronTitle}"`);
-                } else {
-                    showToast('error', 'Failed to create cron via Gateway');
                 }
             } catch (e) {
                 // Gateway not reachable - fallback to local save
@@ -9246,15 +9341,15 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 const gatewayUrl = getGatewayUrl();
                 if (gatewayUrl) {
                     try {
-                        await fetch(gatewayUrl + '/api/crons/' + cronId, { method: 'DELETE' });
+                        await gatewayInvoke('cron', { action: 'remove', jobId: cronId });
                         STATE.crons = STATE.crons.filter(c => c.id !== cronId);
                     } catch (e) {
                         console.log('Could not delete cron via API');
-                        showToast('info', `Run: clawdbot cron remove ${cronId}`, 8000);
+                        showToast('info', `Run: openclaw cron remove ${cronId}`, 8000);
                     }
                 } else {
-                    showToast('info', `Run: clawdbot cron remove ${cronId}`, 8000);
-                    navigator.clipboard?.writeText(`clawdbot cron remove ${cronId}`);
+                    showToast('info', `Run: openclaw cron remove ${cronId}`, 8000);
+                    navigator.clipboard?.writeText(`openclaw cron remove ${cronId}`);
                 }
             }
             
@@ -9458,7 +9553,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             cronRefreshInterval = setInterval(async () => {
                 if (!document.hidden && STATE.token) {
                     try {
-                        await loadCronsFromGitHub();
+                        if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                         renderCrons();
                         console.log('🔄 Auto-refreshed cron data from GitHub');
                     } catch (e) {
@@ -9516,7 +9611,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     STATE.user = user;
                     showDashboard();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub(); // Load data after auth
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub(); // Load data after auth
                     await loadSkillsFromGitHub(); // Load skills for skill column
                     
                     // Auto-probe Gateway if not already configured
@@ -9585,7 +9680,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     STATE.user = user;
                     showDashboard();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                 } else {
                     errorDiv.textContent = 'Invalid token. Please check and try again.';
                     errorDiv.style.display = 'block';
