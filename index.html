@@ -821,7 +821,7 @@
                     </div>
                     <div id="gateway-status" style="font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary);"></div>
                     <div style="margin-top: 10px;">
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Gateway Token (from gateway.auth.token in clawdbot.json)</p>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Gateway Token (from gateway.auth.token in openclaw.json)</p>
                         <div style="display: flex; gap: 8px;">
                             <input type="password" class="form-input" id="gateway-token-input" placeholder="Gateway Auth Token" style="flex: 1;">
                             <button class="btn btn-secondary" onclick="toggleGatewayTokenVisibility()" title="Show/Hide">👁️</button>
@@ -833,9 +833,9 @@
                 
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">💭 Live Thinking</h3>
                 <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Enable real-time thinking visibility during task processing. Requires Clawdbot Hooks Token.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Enable real-time thinking visibility during task processing. Requires Gateway Hooks Token.</p>
                     <div style="display: flex; gap: 8px;">
-                        <input type="password" class="form-input" id="hooks-token-input" placeholder="Hooks Token (from clawdbot.json)" style="flex: 1;">
+                        <input type="password" class="form-input" id="hooks-token-input" placeholder="Hooks Token (from openclaw.json)" style="flex: 1;">
                         <button class="btn btn-secondary" onclick="toggleHooksTokenVisibility()" title="Show/Hide">👁️</button>
                         <button class="btn btn-primary" onclick="saveHooksToken()">Save</button>
                     </div>
@@ -1044,7 +1044,7 @@
             hasUnsavedChanges: false,
             isLoading: false,
             gatewayUrl: null,  // Set via config or auto-detected
-            sessionKey: null,  // Clawdbot session key for thinking visibility
+            sessionKey: null,  // Session key for thinking visibility
             skills: [],  // Skills list for skill column
             crons: [],   // Crons list for recurring column
             searchQuery: '',  // Current search filter
@@ -3408,12 +3408,12 @@
                 const relativeTime = getRelativeTime(date);
                 const author = commit.commit.author.name;
                 const message = commit.commit.message.split('\n')[0];
-                const isClawdbot = author.toLowerCase().includes('clawdbot') || author.toLowerCase().includes('jeannie');
+                const isBot = author.toLowerCase().includes('bot') || author.toLowerCase().includes('openclaw');
                 
                 return `
                     <div class="brain-changelog-item" onclick="openDiffModal('${commit.sha}')" title="Click to view changes">
                         <div class="brain-changelog-item-header">
-                            <span class="brain-changelog-author">${isClawdbot ? '🤖' : '👤'} ${escapeHtml(author)}</span>
+                            <span class="brain-changelog-author">${isBot ? '🤖' : '👤'} ${escapeHtml(author)}</span>
                             <span class="brain-changelog-time">${relativeTime}</span>
                         </div>
                         <div class="brain-changelog-message">${escapeHtml(message)}</div>
@@ -6769,7 +6769,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             }
         }
         
-        // Fetch REAL thinking blocks from Clawdbot Gateway API
+        // Fetch REAL thinking blocks from Gateway API
         async function fetchThinkingBlocks(taskId) {
             const token = getHooksToken();
             
