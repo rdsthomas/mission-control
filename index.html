@@ -8892,6 +8892,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             }
             
             const gatewayUrl = getGatewayUrl();
+            console.log('[saveCronChanges] gatewayUrl:', gatewayUrl, 'cronId:', cronId);
             if (!gatewayUrl) {
                 // Save locally and show CLI command
                 const cron = STATE.crons?.find(c => c.id === cronId);
@@ -8907,11 +8908,13 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 }
                 closeCronEditor();
                 renderCrons();
-                showToast('info', 'Gateway not available. Changes saved locally only.');
+                showToast('info', 'No Gateway URL configured. Changes saved locally only.');
                 return;
             }
             
             try {
+                const token = localStorage.getItem(`gateway_token_${btoa(gatewayUrl)}`) || '';
+                console.log('[saveCronChanges] token present:', !!token, 'key:', `gateway_token_${btoa(gatewayUrl)}`);
                 await gatewayInvoke('cron', { 
                     action: 'update', 
                     jobId: cronId, 
@@ -8935,7 +8938,8 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     showToast('success', `Cron "${name}" updated`);
                 }
             } catch (e) {
-                showToast('info', 'Gateway not available. Changes saved locally only.');
+                console.error('saveCronChanges error:', e);
+                showToast('error', 'Gateway error: ' + (e.message || 'unknown') + '. Changes saved locally only.');
                 const cron = STATE.crons?.find(c => c.id === cronId);
                 if (cron) {
                     cron.name = name;
