@@ -815,11 +815,20 @@
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">Gateway Connection</h3>
                 <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
                     <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Connect to your OpenClaw Gateway for Run History and real-time sync.</p>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                         <input type="text" class="form-input" id="gateway-url-input" placeholder="http://localhost:18789" style="flex: 1;">
                         <button class="btn btn-primary" onclick="saveGatewayUrl()">Connect</button>
                     </div>
                     <div id="gateway-status" style="font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary);"></div>
+                    <div style="margin-top: 10px;">
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Gateway Token (from gateway.auth.token in clawdbot.json)</p>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="password" class="form-input" id="gateway-token-input" placeholder="Gateway Auth Token" style="flex: 1;">
+                            <button class="btn btn-secondary" onclick="toggleGatewayTokenVisibility()" title="Show/Hide">👁️</button>
+                            <button class="btn btn-primary" onclick="saveGatewayToken()">Save</button>
+                        </div>
+                        <div id="gateway-token-status" style="font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary);"></div>
+                    </div>
                 </div>
                 
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">💭 Live Thinking</h3>
@@ -6522,6 +6531,17 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 sessionStatus.textContent = currentSession ? '✅ Configured' : '⚠️ Not set';
                 sessionStatus.style.color = currentSession ? 'var(--accent-green)' : 'var(--text-secondary)';
             }
+            // Show current gateway token
+            const gwTokenInput = document.getElementById('gateway-token-input');
+            const gwTokenStatus = document.getElementById('gateway-token-status');
+            const currentGwToken = currentUrl ? (localStorage.getItem(`gateway_token_${btoa(currentUrl)}`) || '') : '';
+            if (gwTokenInput) {
+                gwTokenInput.value = currentGwToken;
+            }
+            if (gwTokenStatus) {
+                gwTokenStatus.textContent = currentGwToken ? '✅ Token configured' : '⚠️ Not set (cron operations will fail)';
+                gwTokenStatus.style.color = currentGwToken ? 'var(--accent-green)' : 'var(--accent-yellow)';
+            }
             // Show current hooks token
             const hooksInput = document.getElementById('hooks-token-input');
             const hooksStatus = document.getElementById('hooks-token-status');
@@ -6573,6 +6593,37 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                 status.style.color = 'var(--accent-yellow)';
                 showToast('info', 'Gateway URL saved');
             }
+        }
+        
+        // === GATEWAY AUTH TOKEN ===
+        function toggleGatewayTokenVisibility() {
+            const input = document.getElementById('gateway-token-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+        
+        function saveGatewayToken() {
+            const input = document.getElementById('gateway-token-input');
+            const status = document.getElementById('gateway-token-status');
+            const token = input.value.trim();
+            const url = getGatewayUrl();
+            
+            if (!token) {
+                if (url) localStorage.removeItem(`gateway_token_${btoa(url)}`);
+                status.textContent = '⚠️ Token removed';
+                status.style.color = 'var(--accent-yellow)';
+                return;
+            }
+            
+            if (!url) {
+                status.textContent = '❌ Set Gateway URL first';
+                status.style.color = 'var(--accent-red)';
+                return;
+            }
+            
+            localStorage.setItem(`gateway_token_${btoa(url)}`, token);
+            status.textContent = '✅ Token saved';
+            status.style.color = 'var(--accent-green)';
+            showToast('success', 'Gateway token saved');
         }
         
         // === HOOKS TOKEN FOR LIVE THINKING ===
