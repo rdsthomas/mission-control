@@ -5,13 +5,55 @@ All notable changes to Mission Control will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1] - 2026-01-31
+## [2.3.0] - 2026-02-12
+
+### Added
+
+- **OpenClaw Gateway Integration** — All cron operations now use the `/tools/invoke` API endpoint instead of legacy REST calls
+  - `gatewayInvoke()` — Universal gateway adapter with timeout, auth, and error handling
+  - `probeGateway()` — Gateway reachability check via `/tools/invoke`
+  - `extractInvokeData()` — Response mapper for tools/invoke format
+  - `loadCronsFromGateway()` — Load crons directly from gateway (maps gateway format to dashboard format)
+  - `autoProbeGateway()` — Auto-detect gateway from known URLs on startup
+- **Gateway Token UI** — New "Gateway Token" field in Settings modal with show/hide toggle and save button
+- **Gateway URL UI** — New "Gateway URL" field in Settings modal with connection test
+- **CORS Proxy** — `scripts/cors-proxy.js` for cross-origin access when dashboard and gateway are on different origins
+- **Gateway Setup Documentation** — `docs/gateway-setup.md` with full setup instructions
+
+### Changed
+
+- **Default port updated** — `18789` (OpenClaw default) replaces `3033`
+- **Gateway-first cron loading** — Dashboard tries gateway first, falls back to GitHub if unavailable
+- **Improved error messages** — Catch blocks now show actual error details instead of generic messages
+- **URL query parameter support** — Pass `?gateway=http://...` to auto-configure gateway URL
+- **CLI references updated** — All `clawdbot` references replaced with `openclaw`
+
+### Migrated
+
+- `POST /api/crons/:id/run` → `gatewayInvoke('cron', { action: 'run', jobId })`
+- `PATCH /api/crons/:id` → `gatewayInvoke('cron', { action: 'update', jobId, patch })`
+- `DELETE /api/crons/:id` → `gatewayInvoke('cron', { action: 'remove', jobId })`
+- `POST /api/crons` → `gatewayInvoke('cron', { action: 'add', job })`
+
+---
+
+## [2.2.2] - 2026-02-10
 
 ### Security
 
-- **Input sanitization in `mc-update.sh`** — Rejects arguments containing backticks or `$` to prevent shell/string injection
-- **Credential scanning** — Pre-sync checks before open-source publishing
-- **No tokens or secrets** stored in the dashboard
+- **User data excluded from version control** — `data/tasks.json` and `data/crons.json` added to `.gitignore` to prevent personal task data from being committed to the public repo
+- **Demo data templates** — Renamed to `demo-tasks.json` and `demo-crons.json` as safe templates for new installations
+- **Branch protection enabled** — Direct pushes to `main` blocked; PRs with review required
+
+---
+
+## [2.2.1] - 2026-02-07
+
+### Security
+
+- **Input sanitization in `mc-update.sh`** — Replaced heredoc-based Python interpolation with environment variable passing to prevent shell injection
+- **`sanitize_input()` function** — Blocks backticks and `$` characters in all script arguments
+- **Security documentation** — Added Security section to SKILL.md and README.md documenting the trust model, mitigations, and recommendations
 
 ---
 
@@ -47,15 +89,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Last run and next run timestamps (relative time)
 - **`data/crons.json`** — JSON data source for recurring jobs
 - **`scripts/sync-to-opensource.sh`** — Exports sanitized crons for open source distribution
-- **Processing Timer** — Shows elapsed time on processing tasks with 30-minute timeout warning
-- **Processing Border Pulse** — Visual pulsing effect on cards being processed
 
 ### Technical
 
 - CSS styles for `.cron-card`, `.cron-status`, `.recurring-column`
 - `loadCrons()` and `renderCrons()` JavaScript functions
 - `formatCronExpression()` converts cron syntax to German-readable text
-- Enhanced `renderTaskCard()` with time display and timeout detection
 
 ---
 
