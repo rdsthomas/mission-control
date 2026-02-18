@@ -1755,6 +1755,47 @@
             }
         }
 
+        // Load crons from OpenClaw Gateway (primary source when available)
+        async function loadCronsFromGateway() {
+            const gatewayUrl = getGatewayUrl();
+            if (!gatewayUrl) return false;
+            
+            try {
+                const result = await gatewayInvoke('cron', { action: 'list', includeDisabled: true });
+                const data = extractInvokeData(result);
+                const jobs = data.jobs || [];
+                
+                // Map gateway format → dashboard format
+                STATE.crons = jobs.map(job => ({
+                    id: job.id,
+                    name: job.name || '(unnamed)',
+                    prompt: job.payload?.text || '',
+                    schedule: job.schedule?.expr || job.schedule?.everyMs || '',
+                    scheduleKind: job.schedule?.kind || 'cron',
+                    scheduleHuman: cronToHuman(job.schedule?.expr || ''),
+                    timezone: job.schedule?.tz || 'UTC',
+                    enabled: job.enabled !== false,
+                    sessionTarget: job.sessionTarget || 'main',
+                    payload: job.payload,
+                    tags: job.tags || [],
+                    project: job.project || '',
+                    lastRunAt: job.state?.lastRunAtMs ? new Date(job.state.lastRunAtMs).toISOString() : null,
+                    nextRunAt: job.state?.nextRunAtMs ? new Date(job.state.nextRunAtMs).toISOString() : null,
+                    lastStatus: job.state?.lastStatus || null,
+                    lastDurationMs: job.state?.lastDurationMs || 0,
+                    consecutiveErrors: job.state?.consecutiveErrors || 0,
+                    _source: 'gateway'
+                }));
+                
+                console.log(`✓ Loaded ${STATE.crons.length} crons from Gateway`);
+                renderCrons();
+                return true;
+            } catch (e) {
+                console.log('Failed to load crons from Gateway:', e.message);
+                return false;
+            }
+        }
+        
         function renderCrons() {
             const container = document.getElementById('tasks-recurring');
             const countEl = document.getElementById('count-recurring');
@@ -4316,7 +4357,7 @@ Output the consolidated content in clean Markdown format:`;
                     hideAuthModal();
                     updateAuthUI();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                     await loadSkillsFromGitHub();
                 }, 1000);
 
@@ -8079,7 +8120,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             
             cronPollingIntervals[cronId] = setInterval(async () => {
                 try {
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                     const cron = STATE.crons?.find(c => c.id === cronId);
                     
                     if (cron && cron.lastStatus === 'ok') {
@@ -9512,7 +9553,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
             cronRefreshInterval = setInterval(async () => {
                 if (!document.hidden && STATE.token) {
                     try {
-                        await loadCronsFromGitHub();
+                        if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                         renderCrons();
                         console.log('🔄 Auto-refreshed cron data from GitHub');
                     } catch (e) {
@@ -9570,7 +9611,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     STATE.user = user;
                     showDashboard();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub(); // Load data after auth
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub(); // Load data after auth
                     await loadSkillsFromGitHub(); // Load skills for skill column
                     
                     // Auto-probe Gateway if not already configured
@@ -9639,7 +9680,7 @@ ${learning.tags.map(t => `#${t}`).join(' ')}
                     STATE.user = user;
                     showDashboard();
                     await loadTasksFromGitHub();
-                    await loadCronsFromGitHub();
+                    if (!(await loadCronsFromGateway())) await loadCronsFromGitHub();
                 } else {
                     errorDiv.textContent = 'Invalid token. Please check and try again.';
                     errorDiv.style.display = 'block';
