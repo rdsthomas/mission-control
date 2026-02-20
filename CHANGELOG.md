@@ -5,6 +5,14 @@ All notable changes to Mission Control will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2026-02-20
+
+### Fixed
+
+- **ClawdHub package name** — Corrected from "Jeannie Control" to "Mission Control"
+- **Private data leak** — Removed personal cron job data from `assets/data/crons.json` (contained private business references like Clockodo, LinkedIn, personal reminders). Replaced with clean demo data.
+- **Soft flag resolution** — Republished with correct metadata to resolve ClawdHub security flag
+
 ## [2.3.0] - 2026-02-12
 
 ### Added
