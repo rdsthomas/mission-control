@@ -283,3 +283,7 @@ Built for [Clawdbot](https://github.com/clawdbot/clawdbot) 🦞
   <b>Stop losing tasks in chat. Start shipping.</b><br>
   <a href="https://rdsthomas.github.io/mission-control/">Try the Demo</a> · <a href="https://discord.gg/clawd">Join Discord</a> · <a href="https://github.com/rdsthomas/mission-control">⭐ Star on GitHub</a>
 </p>
+
+## Download History
+
+[![Download History](https://skill-history.com/chart/rdsthomas/mission-control.svg)](https://skill-history.com/rdsthomas/mission-control)
